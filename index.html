@@ -3,24 +3,298 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SWE-Bench-Live</title>
+  <title>SWE-bench-Live Leaderboard</title>
+  <link rel="icon" type="image/png" href="assets/swe-bench-live.png">
   <link rel="stylesheet" href="style.css" />
   <!-- Import Inter font from Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
-    <div class="title">
-      <img src="assets/swe-bench-live.png" alt="Logo" class="logo"/>
-      <h1>SWE-Bench-Live</h1>
+    <div class="header">
+      <div class="title">
+        <img src="assets/swe-bench-live.png" alt="SWE-bench-Live Logo" class="logo"/>
+        <h1>SWE-bench-Live Leaderboard</h1>
+      </div>
+      <p class="subtitle">Evaluate your AI system on latest software engineering tasks.</p>
     </div>
-    <p class="subtitle">🚧 Under construction</p>
-    <div class="buttons">
-      <a href="https://todo" class="btn">Paper</a>
-      <a href="https://todo" class="btn">Leaderboard</a>
-      <a href="https://github.com/swe-bench-live" class="btn">GitHub</a>
-      <a href="https://huggingface.co/swe-bench-live" class="btn">HuggingFace</a>
+
+    <!-- Navigation buttons -->
+    <div class="nav-buttons">
+      <a href="https://todo" class="btn btn-paper">Paper</a>
+      <a href="https://github.com/swe-bench-live" class="btn btn-github">
+        <img src="assets/github.svg" alt="GitHub" class="btn-icon">
+        GitHub
+      </a>
+      <a href="https://huggingface.co/swe-bench-live" class="btn btn-huggingface">
+        <img src="assets/huggingface.svg" alt="HuggingFace" class="btn-icon">
+        HuggingFace
+      </a>
+    </div>
+
+    <div class="leaderboard-container">
+      <div class="table-header">
+        <div class="header-left">
+          <div class="stats">
+            <span id="total-models">Loading...</span> methods evaluated on <span id="current-set">Lite</span> set
+          </div>
+        </div>
+        <!-- Dataset selection tabs -->
+        <div class="dataset-tabs">
+          <button class="tab-btn active" data-set="lite">Lite</button>
+          <button class="tab-btn" data-set="full">Full</button>
+        </div>
+      </div>
+      
+      <div class="table-wrapper">
+        <table class="leaderboard-table" id="leaderboard">
+          <thead>
+            <tr>
+              <th class="rank-col">#</th>
+              <th class="model-col">Model</th>
+              <th class="metric-col sortable" data-sort="resolved">
+                <span class="header-text">% Resolved</span>
+                <span class="sort-arrow">↕</span>
+              </th>
+              <th class="metric-col sortable" data-sort="applied">
+                <span class="header-text">% Applied</span>
+                <span class="sort-arrow">↕</span>
+              </th>
+              <th class="metric-col sortable" data-sort="loc_suc">
+                <span class="header-text">% Loc Success</span>
+                <span class="sort-arrow">↕</span>
+              </th>
+              <th class="date-col sortable" data-sort="date">
+                <span class="header-text">Date</span>
+                <span class="sort-arrow">↕</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body">
+            <!-- Data will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Loading leaderboard data...</p>
+      </div>
+      
+      <div class="error" id="error" style="display: none;">
+        <p>Error loading data. Please try again later.</p>
+      </div>
+    </div>
+
+    <!-- Acknowledgement section -->
+    <div class="acknowledgement">
+      <h3>Acknowledgement</h3>
+      <p>
+        SWE-bench-Live is built upon the foundation of <a href="https://www.swebench.com/" target="_blank">SWE-bench</a>.
+        We extend our gratitude to the original SWE-bench team for their pioneering work in software engineering evaluation benchmarks.
+      </p>
     </div>
   </div>
+
+  <script>
+    // Logo mapping for different organizations
+    const logoMap = {
+      'swe-agent': 'assets/logos/swe-agent.png',
+      'openhands': 'assets/logos/openhands.png',
+      'agentless': 'assets/logos/agentless.png'
+    };
+
+    // Current sort configuration
+    let currentSort = { column: 'resolved', direction: 'desc' };
+    let currentDataset = 'lite';
+
+    // Load and display leaderboard data
+    async function loadLeaderboard() {
+      try {
+        const response = await fetch('reports.jsonl');
+        const text = await response.text();
+        
+        // Parse JSONL format
+        const lines = text.trim().split('\n').filter(line => line.trim());
+        const allData = lines.map(line => JSON.parse(line));
+        
+        // Filter by current dataset
+        const data = allData.filter(item => item.set === currentDataset);
+        
+        // Sort by current sort configuration
+        sortData(data, currentSort.column, currentSort.direction);
+        
+        displayLeaderboard(data);
+        document.getElementById('total-models').textContent = data.length;
+        document.getElementById('current-set').textContent = currentDataset.charAt(0).toUpperCase() + currentDataset.slice(1);
+        document.getElementById('loading').style.display = 'none';
+        
+      } catch (error) {
+        console.error('Error loading leaderboard:', error);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+      }
+    }
+
+    // Sort data by column
+    function sortData(data, column, direction) {
+      data.sort((a, b) => {
+        let aVal, bVal;
+        
+        if (column === 'date') {
+          aVal = new Date(a[column]);
+          bVal = new Date(b[column]);
+        } else if (column === 'resolved' || column === 'applied' || column === 'loc_suc') {
+          aVal = parseFloat(a[column]);
+          bVal = parseFloat(b[column]);
+        } else {
+          aVal = a[column].toLowerCase();
+          bVal = b[column].toLowerCase();
+        }
+        
+        if (direction === 'asc') {
+          return aVal > bVal ? 1 : -1;
+        } else {
+          return aVal < bVal ? 1 : -1;
+        }
+      });
+    }
+
+    // Display leaderboard data
+    function displayLeaderboard(data) {
+      const tbody = document.getElementById('leaderboard-body');
+      tbody.innerHTML = '';
+      
+      if (data.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td colspan="6" style="text-align: center; padding: 3rem; color: #64748b;">
+            <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">📊</div>
+            <div>No results available for ${currentDataset.charAt(0).toUpperCase() + currentDataset.slice(1)} dataset</div>
+            <div style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">Please check back later or try a different dataset</div>
+          </td>
+        `;
+        tbody.appendChild(row);
+        return;
+      }
+      
+      data.forEach((item, index) => {
+        const row = document.createElement('tr');
+        
+        // Add rank badge for top 3
+        let rankBadge = '';
+        if (index === 0) rankBadge = '<span class="rank-badge gold">🥇</span>';
+        else if (index === 1) rankBadge = '<span class="rank-badge silver">🥈</span>';
+        else if (index === 2) rankBadge = '<span class="rank-badge bronze">🥉</span>';
+        
+        const logoSrc = logoMap[item.logo] || 'assets/logos/swe-agent.png';
+        const formattedDate = new Date(item.date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        });
+        
+        row.innerHTML = `
+          <td class="rank-col">${rankBadge}${index + 1}</td>
+          <td class="model-col">
+            <div class="model-info">
+              <div class="model-logo-frame">
+                <img src="${logoSrc}" alt="${item.logo}" class="model-logo-img">
+              </div>
+              <span class="model-name">${item.name}</span>
+            </div>
+          </td>
+          <td class="metric-col">
+            <div class="metric-value">
+              <span class="percentage">${item.resolved}%</span>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${item.resolved}%"></div>
+              </div>
+            </div>
+          </td>
+          <td class="metric-col">
+            <div class="metric-value">
+              <span class="percentage">${item.applied}%</span>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${item.applied}%"></div>
+              </div>
+            </div>
+          </td>
+          <td class="metric-col">
+            <div class="metric-value">
+              <span class="percentage">${item.loc_suc}%</span>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${item.loc_suc}%"></div>
+              </div>
+            </div>
+          </td>
+          <td class="date-col">${formattedDate}</td>
+        `;
+        
+        tbody.appendChild(row);
+      });
+    }
+
+    // Handle column sorting
+    function setupSorting() {
+      const sortableHeaders = document.querySelectorAll('.sortable');
+      
+      sortableHeaders.forEach(header => {
+        header.addEventListener('click', () => {
+          const column = header.dataset.sort;
+          let direction = 'desc';
+          
+          // Toggle direction if clicking the same column
+          if (currentSort.column === column) {
+            direction = currentSort.direction === 'desc' ? 'asc' : 'desc';
+          }
+          
+          currentSort = { column, direction };
+          
+          // Update sort arrows
+          sortableHeaders.forEach(h => {
+            const arrow = h.querySelector('.sort-arrow');
+            arrow.textContent = '↕';
+            h.classList.remove('sorted-asc', 'sorted-desc');
+          });
+          
+          const arrow = header.querySelector('.sort-arrow');
+          arrow.textContent = direction === 'desc' ? '↓' : '↑';
+          header.classList.add(direction === 'desc' ? 'sorted-desc' : 'sorted-asc');
+          
+          // Re-load and sort data
+          loadLeaderboard();
+        });
+      });
+    }
+
+    // Handle dataset tab switching
+    function setupDatasetTabs() {
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Update active tab
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          // Update current dataset
+          currentDataset = button.dataset.set;
+          
+          // Show loading and reload data
+          document.getElementById('loading').style.display = 'block';
+          document.getElementById('error').style.display = 'none';
+          loadLeaderboard();
+        });
+      });
+    }
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', () => {
+      setupSorting();
+      setupDatasetTabs();
+      loadLeaderboard();
+    });
+  </script>
 </body>
 </html>
