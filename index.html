@@ -16,7 +16,7 @@
         <img src="assets/swe-bench-live.png" alt="SWE-bench-Live Logo" class="logo"/>
         <h1>SWE-bench-Live Leaderboard</h1>
       </div>
-      <p class="subtitle">Evaluate your AI system on latest software engineering tasks.</p>
+      <p class="subtitle">Evaluating your AI system on latest software engineering tasks.</p>
     </div>
 
     <!-- Navigation buttons -->
@@ -86,6 +86,72 @@
       </div>
     </div>
 
+    <!-- Instance Analysis Section -->
+    <div class="analysis-controls">
+      <div class="controls-header">
+        <p>Select a time range and method to analyze solved/unsolved instances</p>
+      </div>
+      
+      <div class="controls-content">
+        <div class="control-group">
+          <label for="method-select">Method (full set only):</label>
+          <select id="method-select" class="method-select">
+            <option value="">Select a method...</option>
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <label>Time Range:</label>
+          <div class="time-range-container">
+            <div class="time-range-slider">
+              <div class="slider-track"></div>
+              <div class="slider-range" id="slider-range"></div>
+              <input type="range" id="start-slider" class="range-input" min="0" max="16" value="0" step="1">
+              <input type="range" id="end-slider" class="range-input" min="0" max="16" value="16" step="1">
+            </div>
+            <div class="time-labels">
+              <span id="start-label">Jan 2024</span>
+              <span id="end-label">Apr 2025</span>
+            </div>
+          </div>
+        </div>
+        
+        <button id="analyze-btn" class="analyze-btn" disabled>Analyze</button>
+      </div>
+      
+      <div class="analysis-results" id="analysis-results" style="display: none;">
+        <div class="results-header">
+          <h4>Analysis Results</h4>
+          <div class="results-stats">
+            <div class="stat-item">
+              <span class="stat-label">Time Range:</span>
+              <span class="stat-value" id="selected-range">-</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Instances:</span>
+              <span class="stat-value" id="total-instances">-</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Resolved Rate:</span>
+              <span class="stat-value" id="resolved-rate">-</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="results-content">
+          <div class="instance-section">
+            <h5>Solved Instances (<span id="solved-count">0</span>)</h5>
+            <div class="instance-list" id="solved-instances"></div>
+          </div>
+          
+          <div class="instance-section">
+            <h5>Unsolved Instances (<span id="unsolved-count">0</span>)</h5>
+            <div class="instance-list" id="unsolved-instances"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Acknowledgement section -->
     <div class="acknowledgement">
       <h3>Acknowledgement</h3>
@@ -107,6 +173,41 @@
     // Current sort configuration
     let currentSort = { column: 'resolved', direction: 'desc' };
     let currentDataset = 'lite';
+    let datasetInstances = [];
+    let allReports = [];
+
+    // Time range mapping (months from Jan 2024 to Apr 2025)
+    const timeRangeMap = [
+      { label: 'Jan 2024', year: 2024, month: 1 },
+      { label: 'Feb 2024', year: 2024, month: 2 },
+      { label: 'Mar 2024', year: 2024, month: 3 },
+      { label: 'Apr 2024', year: 2024, month: 4 },
+      { label: 'May 2024', year: 2024, month: 5 },
+      { label: 'Jun 2024', year: 2024, month: 6 },
+      { label: 'Jul 2024', year: 2024, month: 7 },
+      { label: 'Aug 2024', year: 2024, month: 8 },
+      { label: 'Sep 2024', year: 2024, month: 9 },
+      { label: 'Oct 2024', year: 2024, month: 10 },
+      { label: 'Nov 2024', year: 2024, month: 11 },
+      { label: 'Dec 2024', year: 2024, month: 12 },
+      { label: 'Jan 2025', year: 2025, month: 1 },
+      { label: 'Feb 2025', year: 2025, month: 2 },
+      { label: 'Mar 2025', year: 2025, month: 3 },
+      { label: 'Apr 2025', year: 2025, month: 4 },
+      { label: 'May 2025', year: 2025, month: 5 }
+    ];
+
+    // Load dataset instances
+    async function loadDatasetInstances() {
+      try {
+        const response = await fetch('dataset.jsonl');
+        const text = await response.text();
+        const lines = text.trim().split('\n').filter(line => line.trim());
+        datasetInstances = lines.map(line => JSON.parse(line));
+      } catch (error) {
+        console.error('Error loading dataset instances:', error);
+      }
+    }
 
     // Load and display leaderboard data
     async function loadLeaderboard() {
@@ -116,10 +217,10 @@
         
         // Parse JSONL format
         const lines = text.trim().split('\n').filter(line => line.trim());
-        const allData = lines.map(line => JSON.parse(line));
+        allReports = lines.map(line => JSON.parse(line));
         
         // Filter by current dataset
-        const data = allData.filter(item => item.set === currentDataset);
+        const data = allReports.filter(item => item.set === currentDataset);
         
         // Sort by current sort configuration
         sortData(data, currentSort.column, currentSort.direction);
@@ -129,11 +230,30 @@
         document.getElementById('current-set').textContent = currentDataset.charAt(0).toUpperCase() + currentDataset.slice(1);
         document.getElementById('loading').style.display = 'none';
         
+        // Populate method selector for analysis
+        populateMethodSelector();
+        
       } catch (error) {
         console.error('Error loading leaderboard:', error);
         document.getElementById('loading').style.display = 'none';
         document.getElementById('error').style.display = 'block';
       }
+    }
+
+    // Populate method selector with full dataset methods
+    function populateMethodSelector() {
+      const methodSelect = document.getElementById('method-select');
+      const fullMethods = allReports.filter(item => item.set === 'full');
+      
+      // Clear existing options except the first one
+      methodSelect.innerHTML = '<option value="">Select a method...</option>';
+      
+      fullMethods.forEach(method => {
+        const option = document.createElement('option');
+        option.value = method.name;
+        option.textContent = method.name;
+        methodSelect.appendChild(option);
+      });
     }
 
     // Sort data by column
@@ -289,11 +409,191 @@
       });
     }
 
+    // Setup time range slider
+    function setupTimeRangeSlider() {
+      const startSlider = document.getElementById('start-slider');
+      const endSlider = document.getElementById('end-slider');
+      const startLabel = document.getElementById('start-label');
+      const endLabel = document.getElementById('end-label');
+      const sliderRange = document.getElementById('slider-range');
+      
+      function updateSlider() {
+        const startVal = parseInt(startSlider.value);
+        const endVal = parseInt(endSlider.value);
+        
+        // Ensure start is always less than or equal to end
+        if (startVal > endVal) {
+          if (this === startSlider) {
+            endSlider.value = startVal;
+          } else {
+            startSlider.value = endVal;
+          }
+        }
+        
+        const finalStart = Math.min(parseInt(startSlider.value), parseInt(endSlider.value));
+        const finalEnd = Math.max(parseInt(startSlider.value), parseInt(endSlider.value));
+        
+        startLabel.textContent = timeRangeMap[finalStart].label;
+        endLabel.textContent = timeRangeMap[finalEnd].label;
+        
+        // Update visual range
+        const percent1 = (finalStart / 16) * 100;
+        const percent2 = (finalEnd / 16) * 100;
+        sliderRange.style.left = percent1 + '%';
+        sliderRange.style.width = (percent2 - percent1) + '%';
+        
+        // Enable/disable analyze button
+        const methodSelect = document.getElementById('method-select');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        analyzeBtn.disabled = !methodSelect.value;
+      }
+      
+      startSlider.addEventListener('input', updateSlider);
+      endSlider.addEventListener('input', updateSlider);
+      
+      // Initial update
+      updateSlider();
+    }
+
+    // Setup method selection
+    function setupMethodSelection() {
+      const methodSelect = document.getElementById('method-select');
+      const analyzeBtn = document.getElementById('analyze-btn');
+      
+      methodSelect.addEventListener('change', () => {
+        analyzeBtn.disabled = !methodSelect.value;
+      });
+    }
+
+    // Setup analysis functionality
+    function setupAnalysis() {
+      const analyzeBtn = document.getElementById('analyze-btn');
+      
+      analyzeBtn.addEventListener('click', () => {
+        performAnalysis();
+      });
+    }
+
+    // Perform instance analysis
+    function performAnalysis() {
+      const methodSelect = document.getElementById('method-select');
+      const startSlider = document.getElementById('start-slider');
+      const endSlider = document.getElementById('end-slider');
+      
+      const selectedMethod = methodSelect.value;
+      const startIndex = Math.min(parseInt(startSlider.value), parseInt(endSlider.value));
+      const endIndex = Math.max(parseInt(startSlider.value), parseInt(endSlider.value));
+      
+      const startTime = timeRangeMap[startIndex];
+      const endTime = timeRangeMap[endIndex];
+      
+      // Find the method data
+      const methodData = allReports.find(report => report.name === selectedMethod && report.set === 'full');
+      if (!methodData) {
+        alert('Method data not found');
+        return;
+      }
+      
+      // Filter instances by time range
+      const filteredInstances = datasetInstances.filter(instance => {
+        const createdDate = new Date(instance.created_at);
+        const createdYear = createdDate.getFullYear();
+        const createdMonth = createdDate.getMonth() + 1; // getMonth() returns 0-11
+        
+        // Check if the instance falls within the selected time range
+        const startDate = new Date(startTime.year, startTime.month - 1, 1);
+        const endDate = new Date(endTime.year, endTime.month, 0); // Last day of end month
+        
+        return createdDate >= startDate && createdDate <= endDate;
+      });
+      
+      // Separate solved and unsolved instances
+      const solvedInstances = filteredInstances.filter(instance => 
+        methodData.resolved_ids.includes(instance.instance_id)
+      );
+      const unsolvedInstances = filteredInstances.filter(instance => 
+        !methodData.resolved_ids.includes(instance.instance_id)
+      );
+      
+      // Calculate resolved rate
+      const resolvedRate = filteredInstances.length > 0 
+        ? ((solvedInstances.length / filteredInstances.length) * 100).toFixed(2)
+        : '0.00';
+      
+      // Display results
+      displayAnalysisResults({
+        timeRange: `${startTime.label} - ${endTime.label}`,
+        totalInstances: filteredInstances.length,
+        resolvedRate: resolvedRate,
+        solvedInstances: solvedInstances,
+        unsolvedInstances: unsolvedInstances
+      });
+    }
+
+    // Display analysis results
+    function displayAnalysisResults(results) {
+      document.getElementById('selected-range').textContent = results.timeRange;
+      document.getElementById('total-instances').textContent = results.totalInstances;
+      document.getElementById('resolved-rate').textContent = results.resolvedRate + '%';
+      document.getElementById('solved-count').textContent = results.solvedInstances.length;
+      document.getElementById('unsolved-count').textContent = results.unsolvedInstances.length;
+      
+      // Display solved instances
+      const solvedContainer = document.getElementById('solved-instances');
+      solvedContainer.innerHTML = '';
+      results.solvedInstances.forEach(instance => {
+        const link = createInstanceLink(instance);
+        solvedContainer.appendChild(link);
+      });
+      
+      // Display unsolved instances
+      const unsolvedContainer = document.getElementById('unsolved-instances');
+      unsolvedContainer.innerHTML = '';
+      results.unsolvedInstances.forEach(instance => {
+        const link = createInstanceLink(instance);
+        unsolvedContainer.appendChild(link);
+      });
+      
+      // Show results
+      document.getElementById('analysis-results').style.display = 'block';
+    }
+
+    // Create instance link with date
+    function createInstanceLink(instance) {
+      const container = document.createElement('div');
+      container.className = 'instance-item';
+      
+      const link = document.createElement('a');
+      link.href = `https://github.com/${instance.repo}/pull/${instance.instance_id.split('__').pop().split('-').pop()}`;
+      link.target = '_blank';
+      link.className = 'instance-link';
+      link.textContent = instance.instance_id;
+      
+      const date = document.createElement('span');
+      date.className = 'instance-date';
+      const createdDate = new Date(instance.created_at);
+      date.textContent = createdDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+      
+      container.appendChild(link);
+      container.appendChild(date);
+      return container;
+    }
+
     // Initialize the page
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       setupSorting();
       setupDatasetTabs();
-      loadLeaderboard();
+      setupTimeRangeSlider();
+      setupMethodSelection();
+      setupAnalysis();
+      
+      // Load data
+      await loadDatasetInstances();
+      await loadLeaderboard();
     });
   </script>
 </body>
