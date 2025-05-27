@@ -645,36 +645,36 @@ body {
   white-space: nowrap;
 }
 
-/* Acknowledgement section */
-.acknowledgement {
+/* Statement section */
+.statement {
   background: white;
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 2rem;
-  text-align: center;
+  text-align: left;
 }
 
-.acknowledgement h3 {
+.statement h3 {
   margin: 0 0 1rem 0;
   font-size: 1.25rem;
   font-weight: 700;
   color: #1e293b;
 }
 
-.acknowledgement p {
+.statement p {
   margin: 0;
   color: #64748b;
   line-height: 1.6;
 }
 
-.acknowledgement a {
+.statement a {
   color: #667eea;
   text-decoration: none;
   font-weight: 600;
 }
 
-.acknowledgement a:hover {
+.statement a:hover {
   text-decoration: underline;
 }
 
@@ -753,7 +753,7 @@ body {
     height: 32px;
   }
   
-  .acknowledgement {
+  .statement {
     padding: 1.5rem;
   }
   
