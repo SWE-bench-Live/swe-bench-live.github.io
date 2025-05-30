@@ -678,6 +678,21 @@ body {
   text-decoration: underline;
 }
 
+.statement pre {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #374151;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .container {
@@ -755,6 +770,12 @@ body {
   
   .statement {
     padding: 1.5rem;
+  }
+  
+  .statement pre {
+    padding: 1rem;
+    font-size: 0.8rem;
+    margin: 0.75rem 0;
   }
   
   .controls-content {
