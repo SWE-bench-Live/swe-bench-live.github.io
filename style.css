@@ -85,15 +85,15 @@ body {
 
 .btn-paper {
   background: white;
-  color: #667eea;
-  border-color: #667eea;
+  color: #B31B1B;
+  border-color: #B31B1B;
 }
 
 .btn-paper:hover {
   background: white;
-  color: #667eea;
+  color: #B31B1B;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(179, 27, 27, 0.3);
 }
 
 .btn-github {
