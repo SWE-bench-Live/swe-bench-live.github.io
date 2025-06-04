@@ -822,10 +822,11 @@ body {
 /* Responsive design */
 @media (max-width: 1024px) {
   .sidebar {
-    transform: translateX(-100%);
+    display: none;
   }
   
   .sidebar.open {
+    display: flex;
     transform: translateX(0);
   }
   
