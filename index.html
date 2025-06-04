@@ -20,7 +20,6 @@
         <li><a href="#intro" class="nav-link">About</a></li>
         <li><a href="#news" class="nav-link">News</a></li>
         <li><a href="#leaderboard" class="nav-link">Leaderboard</a></li>
-        <li><a href="#analysis" class="nav-link">Analysis</a></li>
         <li><a href="#submit" class="nav-link">Submit Results</a></li>
         <li><a href="#citation" class="nav-link">Citation</a></li>
       </ul>
@@ -98,6 +97,27 @@
           </div>
         </div>
         
+        <!-- Time Range Controls -->
+        <div class="time-range-controls">
+          <div class="controls-content">
+            <div class="control-group">
+              <label>Filter by Time Range: <span id="filtered-instances-inline">-</span> instances</label>
+              <div class="time-range-container">
+                <div class="time-range-slider">
+                  <div class="slider-track"></div>
+                  <div class="slider-range" id="slider-range"></div>
+                  <input type="range" id="start-slider" class="range-input" min="0" max="16" value="0" step="1">
+                  <input type="range" id="end-slider" class="range-input" min="0" max="16" value="16" step="1">
+                </div>
+                <div class="time-labels">
+                  <span id="start-label">Jan 2024</span>
+                  <span id="end-label">Apr 2025</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <div class="table-wrapper">
           <table class="leaderboard-table" id="leaderboard">
             <thead>
@@ -108,12 +128,12 @@
                   <span class="header-text">% Resolved</span>
                   <span class="sort-arrow">↕</span>
                 </th>
-                <th class="metric-col sortable" data-sort="applied">
-                  <span class="header-text">% Applied</span>
-                  <span class="sort-arrow">↕</span>
-                </th>
                 <th class="metric-col sortable" data-sort="loc_suc">
                   <span class="header-text">% Loc Success</span>
+                  <span class="sort-arrow">↕</span>
+                </th>
+                <th class="metric-col sortable" data-sort="applied">
+                  <span class="header-text">% Applied</span>
                   <span class="sort-arrow">↕</span>
                 </th>
                 <th class="date-col sortable" data-sort="date">
@@ -135,72 +155,6 @@
         
         <div class="error" id="error" style="display: none;">
           <p>Error loading data. Please try again later.</p>
-        </div>
-      </div>
-
-      <!-- Instance Analysis Section -->
-      <div class="analysis-controls" id="analysis">
-        <div class="controls-header">
-          <p>Select a time range and method to analyze solved/unsolved instances</p>
-        </div>
-        
-        <div class="controls-content">
-          <div class="control-group">
-            <label for="method-select">Method (full set only):</label>
-            <select id="method-select" class="method-select">
-              <option value="">Select a method...</option>
-            </select>
-          </div>
-          
-          <div class="control-group">
-            <label>Time Range:</label>
-            <div class="time-range-container">
-              <div class="time-range-slider">
-                <div class="slider-track"></div>
-                <div class="slider-range" id="slider-range"></div>
-                <input type="range" id="start-slider" class="range-input" min="0" max="16" value="0" step="1">
-                <input type="range" id="end-slider" class="range-input" min="0" max="16" value="16" step="1">
-              </div>
-              <div class="time-labels">
-                <span id="start-label">Jan 2024</span>
-                <span id="end-label">Apr 2025</span>
-              </div>
-            </div>
-          </div>
-          
-          <button id="analyze-btn" class="analyze-btn" disabled>Analyze</button>
-        </div>
-        
-        <div class="analysis-results" id="analysis-results" style="display: none;">
-          <div class="results-header">
-            <h4>Analysis Results</h4>
-            <div class="results-stats">
-              <div class="stat-item">
-                <span class="stat-label">Time Range:</span>
-                <span class="stat-value" id="selected-range">-</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Total Instances:</span>
-                <span class="stat-value" id="total-instances">-</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Resolved Rate:</span>
-                <span class="stat-value" id="resolved-rate">-</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="results-content">
-            <div class="instance-section">
-              <h5>Solved Instances (<span id="solved-count">0</span>)</h5>
-              <div class="instance-list" id="solved-instances"></div>
-            </div>
-            
-            <div class="instance-section">
-              <h5>Unsolved Instances (<span id="unsolved-count">0</span>)</h5>
-              <div class="instance-list" id="unsolved-instances"></div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -239,9 +193,9 @@
   <script>
     // Logo mapping for different organizations
     const logoMap = {
-      'swe-agent': 'assets/logos/swe-agent.png',
-      'openhands': 'assets/logos/openhands.png',
-      'agentless': 'assets/logos/agentless.png'
+      'SWE-agent': 'assets/logos/SWE-agent.png',
+      'OpenHands': 'assets/logos/OpenHands.png',
+      'Agentless': 'assets/logos/Agentless.png'
     };
 
     // Current sort configuration
@@ -249,6 +203,8 @@
     let currentDataset = 'lite';
     let datasetInstances = [];
     let allReports = [];
+    let currentTimeRange = { start: 0, end: 16 }; // Default to full range
+    let datasetTimeRanges = { lite: { min: 0, max: 16 }, full: { min: 0, max: 16 } };
 
     // Time range mapping (months from Jan 2024 to Apr 2025)
     const timeRangeMap = [
@@ -271,41 +227,154 @@
       { label: 'May 2025', year: 2025, month: 5 }
     ];
 
-    // Load dataset instances
+    // Load dataset instances and determine time ranges for each split
     async function loadDatasetInstances() {
       try {
         const response = await fetch('dataset.jsonl');
         const text = await response.text();
         const lines = text.trim().split('\n').filter(line => line.trim());
         datasetInstances = lines.map(line => JSON.parse(line));
+        
+        // Calculate time ranges for each dataset split
+        calculateDatasetTimeRanges();
       } catch (error) {
         console.error('Error loading dataset instances:', error);
       }
     }
 
+    // Calculate the actual time ranges for each dataset split
+    function calculateDatasetTimeRanges() {
+      const liteInstances = datasetInstances.filter(instance => instance.is_lite);
+      const fullInstances = datasetInstances; // Changed to include all instances
+      
+      datasetTimeRanges.lite = calculateTimeRange(liteInstances);
+      datasetTimeRanges.full = calculateTimeRange(fullInstances);
+    }
+
+    // Calculate time range for a set of instances
+    function calculateTimeRange(instances) {
+      if (instances.length === 0) return { min: 0, max: 16 };
+      
+      const dates = instances.map(instance => new Date(instance.created_at));
+      const minDate = new Date(Math.min(...dates));
+      const maxDate = new Date(Math.max(...dates));
+      
+      // Convert to time range indices
+      const minIndex = findTimeRangeIndex(minDate);
+      const maxIndex = findTimeRangeIndex(maxDate);
+      
+      return { min: minIndex, max: maxIndex };
+    }
+
+    // Find the time range index for a given date
+    function findTimeRangeIndex(date) {
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      
+      for (let i = 0; i < timeRangeMap.length; i++) {
+        const range = timeRangeMap[i];
+        if (range.year === year && range.month === month) {
+          return i;
+        }
+      }
+      
+      // If not found, find closest
+      if (year < 2024 || (year === 2024 && month < 1)) return 0;
+      if (year > 2025 || (year === 2025 && month > 5)) return timeRangeMap.length - 1;
+      
+      return 0;
+    }
+
+    // Get filtered instances based on current time range and dataset
+    function getFilteredInstances() {
+      const currentInstances = datasetInstances.filter(instance => 
+        currentDataset === 'lite' ? instance.is_lite : true // Changed to include all instances for full set
+      );
+      
+      const startTime = timeRangeMap[currentTimeRange.start];
+      const endTime = timeRangeMap[currentTimeRange.end];
+      
+      return currentInstances.filter(instance => {
+        const createdDate = new Date(instance.created_at);
+        const startDate = new Date(startTime.year, startTime.month - 1, 1);
+        const endDate = new Date(endTime.year, endTime.month, 0); // Last day of end month
+        
+        return createdDate >= startDate && createdDate <= endDate;
+      });
+    }
+
+    // Recalculate metrics for filtered data
+    function recalculateMetricsForTimeRange(reports, filteredInstanceIds) {
+      return reports.map(report => {
+        const newReport = { ...report };
+        
+        // Filter resolved, applied, and located IDs to only include filtered instances
+        const filteredResolved = (report.resolved || []).filter(id => filteredInstanceIds.has(id));
+        const filteredApplied = (report.applied || []).filter(id => filteredInstanceIds.has(id));
+        const filteredLocated = (report.located || []).filter(id => filteredInstanceIds.has(id));
+        
+        const total = filteredInstanceIds.size;
+        
+        if (total > 0) {
+          newReport.resolved_percentage = ((filteredResolved.length / total) * 100).toFixed(2);
+          newReport.applied_percentage = ((filteredApplied.length / total) * 100).toFixed(2);
+          newReport.loc_suc_percentage = ((filteredLocated.length / total) * 100).toFixed(2);
+        } else {
+          newReport.resolved_percentage = "0.00";
+          newReport.applied_percentage = "0.00";
+          newReport.loc_suc_percentage = "0.00";
+        }
+        
+        newReport.filtered_total = total;
+        newReport.resolved_ids = filteredResolved;
+        
+        return newReport;
+      });
+    }
+
     // Load and display leaderboard data
     async function loadLeaderboard() {
       try {
-        const response = await fetch('reports.jsonl');
+        const response = await fetch('reports-0605.jsonl');
         const text = await response.text();
         
         // Parse JSONL format
         const lines = text.trim().split('\n').filter(line => line.trim());
-        allReports = lines.map(line => JSON.parse(line));
+        allReports = lines.map(line => {
+          const item = JSON.parse(line);
+          
+          // Calculate percentages from ID arrays and total
+          if (item.resolved && item.total) {
+            item.resolved_percentage = ((item.resolved.length / item.total) * 100).toFixed(2);
+          } else {
+            item.resolved_percentage = "0.00";
+          }
+          
+          if (item.applied && item.total) {
+            item.applied_percentage = ((item.applied.length / item.total) * 100).toFixed(2);
+          } else {
+            item.applied_percentage = "0.00";
+          }
+          
+          if (item.located && item.total) {
+            item.loc_suc_percentage = ((item.located.length / item.total) * 100).toFixed(2);
+          } else {
+            item.loc_suc_percentage = "0.00";
+          }
+          
+          // Keep the resolved_ids for compatibility
+          item.resolved_ids = item.resolved || [];
+          
+          return item;
+        });
         
-        // Filter by current dataset
-        const data = allReports.filter(item => item.set === currentDataset);
+        // Update time range sliders for current dataset
+        updateTimeRangeSliders();
         
-        // Sort by current sort configuration
-        sortData(data, currentSort.column, currentSort.direction);
+        // Filter and display data
+        updateLeaderboardWithTimeRange();
         
-        displayLeaderboard(data);
-        document.getElementById('total-models').textContent = data.length;
-        document.getElementById('current-set').textContent = currentDataset.charAt(0).toUpperCase() + currentDataset.slice(1);
         document.getElementById('loading').style.display = 'none';
-        
-        // Populate method selector for analysis
-        populateMethodSelector();
         
       } catch (error) {
         console.error('Error loading leaderboard:', error);
@@ -314,33 +383,104 @@
       }
     }
 
-    // Populate method selector with full dataset methods
-    function populateMethodSelector() {
-      const methodSelect = document.getElementById('method-select');
-      const fullMethods = allReports.filter(item => item.set === 'full');
+    // Update leaderboard with current time range
+    function updateLeaderboardWithTimeRange() {
+      // Get filtered instances
+      const filteredInstances = getFilteredInstances();
+      const filteredInstanceIds = new Set(filteredInstances.map(inst => inst.instance_id));
       
-      // Clear existing options except the first one
-      methodSelect.innerHTML = '<option value="">Select a method...</option>';
+      // Filter by current dataset
+      let data = allReports.filter(item => item.set === currentDataset);
       
-      fullMethods.forEach(method => {
-        const option = document.createElement('option');
-        option.value = method.name;
-        option.textContent = method.name;
-        methodSelect.appendChild(option);
-      });
+      // Recalculate metrics for filtered time range
+      data = recalculateMetricsForTimeRange(data, filteredInstanceIds);
+      
+      // Sort by current sort configuration
+      sortData(data, currentSort.column, currentSort.direction);
+      
+      displayLeaderboard(data);
+      document.getElementById('total-models').textContent = data.length;
+      document.getElementById('current-set').textContent = currentDataset.charAt(0).toUpperCase() + currentDataset.slice(1);
+      document.getElementById('filtered-instances-inline').textContent = filteredInstances.length;
     }
 
-    // Sort data by column
+    // Update time range sliders based on current dataset
+    function updateTimeRangeSliders() {
+      const range = datasetTimeRanges[currentDataset];
+      const startSlider = document.getElementById('start-slider');
+      const endSlider = document.getElementById('end-slider');
+      
+      // Update slider ranges
+      startSlider.min = range.min;
+      startSlider.max = range.max;
+      endSlider.min = range.min;
+      endSlider.max = range.max;
+      
+      // Reset to full range for current dataset
+      currentTimeRange = { start: range.min, end: range.max };
+      startSlider.value = range.min;
+      endSlider.value = range.max;
+      
+      updateSliderLabels();
+    }
+
+    // Update slider labels and visual range
+    function updateSliderLabels() {
+      const startSlider = document.getElementById('start-slider');
+      const endSlider = document.getElementById('end-slider');
+      const startLabel = document.getElementById('start-label');
+      const endLabel = document.getElementById('end-label');
+      const sliderRange = document.getElementById('slider-range');
+      
+      const startVal = parseInt(startSlider.value);
+      const endVal = parseInt(endSlider.value);
+      
+      currentTimeRange = { start: Math.min(startVal, endVal), end: Math.max(startVal, endVal) };
+      
+      startLabel.textContent = timeRangeMap[currentTimeRange.start].label;
+      endLabel.textContent = timeRangeMap[currentTimeRange.end].label;
+      
+      // Update visual range
+      const range = datasetTimeRanges[currentDataset];
+      const totalRange = range.max - range.min;
+      const percent1 = totalRange > 0 ? ((currentTimeRange.start - range.min) / totalRange) * 100 : 0;
+      const percent2 = totalRange > 0 ? ((currentTimeRange.end - range.min) / totalRange) * 100 : 100;
+      
+      sliderRange.style.left = percent1 + '%';
+      sliderRange.style.width = (percent2 - percent1) + '%';
+    }
+
+    // Sort data by column with priority sorting
     function sortData(data, column, direction) {
       data.sort((a, b) => {
-        let aVal, bVal;
+        // Multi-level priority sorting: resolved > loc_suc > applied
+        if (column === 'resolved' || column === 'loc_suc' || column === 'applied') {
+          const resolvedA = parseFloat(a.resolved_percentage);
+          const resolvedB = parseFloat(b.resolved_percentage);
+          const locSucA = parseFloat(a.loc_suc_percentage);
+          const locSucB = parseFloat(b.loc_suc_percentage);
+          const appliedA = parseFloat(a.applied_percentage);
+          const appliedB = parseFloat(b.applied_percentage);
+          
+          // Primary sort by resolved (highest priority)
+          if (resolvedA !== resolvedB) {
+            return direction === 'desc' ? resolvedB - resolvedA : resolvedA - resolvedB;
+          }
+          
+          // Secondary sort by loc_suc (medium priority)
+          if (locSucA !== locSucB) {
+            return direction === 'desc' ? locSucB - locSucA : locSucA - locSucB;
+          }
+          
+          // Tertiary sort by applied (lowest priority)
+          return direction === 'desc' ? appliedB - appliedA : appliedA - appliedB;
+        }
         
+        // Original sorting logic for other columns
+        let aVal, bVal;
         if (column === 'date') {
           aVal = new Date(a[column]);
           bVal = new Date(b[column]);
-        } else if (column === 'resolved' || column === 'applied' || column === 'loc_suc') {
-          aVal = parseFloat(a[column]);
-          bVal = parseFloat(b[column]);
         } else {
           aVal = a[column].toLowerCase();
           bVal = b[column].toLowerCase();
@@ -400,25 +540,25 @@
           </td>
           <td class="metric-col">
             <div class="metric-value">
-              <span class="percentage">${item.resolved}%</span>
+              <span class="percentage">${item.resolved_percentage}%</span>
               <div class="progress-bar">
-                <div class="progress-fill" style="width: ${item.resolved}%"></div>
+                <div class="progress-fill" style="width: ${item.resolved_percentage}%"></div>
               </div>
             </div>
           </td>
           <td class="metric-col">
             <div class="metric-value">
-              <span class="percentage">${item.applied}%</span>
+              <span class="percentage">${item.loc_suc_percentage}%</span>
               <div class="progress-bar">
-                <div class="progress-fill" style="width: ${item.applied}%"></div>
+                <div class="progress-fill" style="width: ${item.loc_suc_percentage}%"></div>
               </div>
             </div>
           </td>
           <td class="metric-col">
             <div class="metric-value">
-              <span class="percentage">${item.loc_suc}%</span>
+              <span class="percentage">${item.applied_percentage}%</span>
               <div class="progress-bar">
-                <div class="progress-fill" style="width: ${item.loc_suc}%"></div>
+                <div class="progress-fill" style="width: ${item.applied_percentage}%"></div>
               </div>
             </div>
           </td>
@@ -456,8 +596,8 @@
           arrow.textContent = direction === 'desc' ? '↓' : '↑';
           header.classList.add(direction === 'desc' ? 'sorted-desc' : 'sorted-asc');
           
-          // Re-load and sort data
-          loadLeaderboard();
+          // Re-calculate and display data with current time range
+          updateLeaderboardWithTimeRange();
         });
       });
     }
@@ -475,10 +615,14 @@
           // Update current dataset
           currentDataset = button.dataset.set;
           
+          // Update time range sliders for new dataset
+          updateTimeRangeSliders();
+          
           // Show loading and reload data
           document.getElementById('loading').style.display = 'block';
           document.getElementById('error').style.display = 'none';
-          loadLeaderboard();
+          updateLeaderboardWithTimeRange();
+          document.getElementById('loading').style.display = 'none';
         });
       });
     }
@@ -487,9 +631,6 @@
     function setupTimeRangeSlider() {
       const startSlider = document.getElementById('start-slider');
       const endSlider = document.getElementById('end-slider');
-      const startLabel = document.getElementById('start-label');
-      const endLabel = document.getElementById('end-label');
-      const sliderRange = document.getElementById('slider-range');
       
       function updateSlider() {
         const startVal = parseInt(startSlider.value);
@@ -504,22 +645,8 @@
           }
         }
         
-        const finalStart = Math.min(parseInt(startSlider.value), parseInt(endSlider.value));
-        const finalEnd = Math.max(parseInt(startSlider.value), parseInt(endSlider.value));
-        
-        startLabel.textContent = timeRangeMap[finalStart].label;
-        endLabel.textContent = timeRangeMap[finalEnd].label;
-        
-        // Update visual range
-        const percent1 = (finalStart / 16) * 100;
-        const percent2 = (finalEnd / 16) * 100;
-        sliderRange.style.left = percent1 + '%';
-        sliderRange.style.width = (percent2 - percent1) + '%';
-        
-        // Enable/disable analyze button
-        const methodSelect = document.getElementById('method-select');
-        const analyzeBtn = document.getElementById('analyze-btn');
-        analyzeBtn.disabled = !methodSelect.value;
+        updateSliderLabels();
+        updateLeaderboardWithTimeRange();
       }
       
       startSlider.addEventListener('input', updateSlider);
@@ -529,141 +656,11 @@
       updateSlider();
     }
 
-    // Setup method selection
-    function setupMethodSelection() {
-      const methodSelect = document.getElementById('method-select');
-      const analyzeBtn = document.getElementById('analyze-btn');
-      
-      methodSelect.addEventListener('change', () => {
-        analyzeBtn.disabled = !methodSelect.value;
-      });
-    }
-
-    // Setup analysis functionality
-    function setupAnalysis() {
-      const analyzeBtn = document.getElementById('analyze-btn');
-      
-      analyzeBtn.addEventListener('click', () => {
-        performAnalysis();
-      });
-    }
-
-    // Perform instance analysis
-    function performAnalysis() {
-      const methodSelect = document.getElementById('method-select');
-      const startSlider = document.getElementById('start-slider');
-      const endSlider = document.getElementById('end-slider');
-      
-      const selectedMethod = methodSelect.value;
-      const startIndex = Math.min(parseInt(startSlider.value), parseInt(endSlider.value));
-      const endIndex = Math.max(parseInt(startSlider.value), parseInt(endSlider.value));
-      
-      const startTime = timeRangeMap[startIndex];
-      const endTime = timeRangeMap[endIndex];
-      
-      // Find the method data
-      const methodData = allReports.find(report => report.name === selectedMethod && report.set === 'full');
-      if (!methodData) {
-        alert('Method data not found');
-        return;
-      }
-      
-      // Filter instances by time range
-      const filteredInstances = datasetInstances.filter(instance => {
-        const createdDate = new Date(instance.created_at);
-        const createdYear = createdDate.getFullYear();
-        const createdMonth = createdDate.getMonth() + 1; // getMonth() returns 0-11
-        
-        // Check if the instance falls within the selected time range
-        const startDate = new Date(startTime.year, startTime.month - 1, 1);
-        const endDate = new Date(endTime.year, endTime.month, 0); // Last day of end month
-        
-        return createdDate >= startDate && createdDate <= endDate;
-      });
-      
-      // Separate solved and unsolved instances
-      const solvedInstances = filteredInstances.filter(instance => 
-        methodData.resolved_ids.includes(instance.instance_id)
-      );
-      const unsolvedInstances = filteredInstances.filter(instance => 
-        !methodData.resolved_ids.includes(instance.instance_id)
-      );
-      
-      // Calculate resolved rate
-      const resolvedRate = filteredInstances.length > 0 
-        ? ((solvedInstances.length / filteredInstances.length) * 100).toFixed(2)
-        : '0.00';
-      
-      // Display results
-      displayAnalysisResults({
-        timeRange: `${startTime.label} - ${endTime.label}`,
-        totalInstances: filteredInstances.length,
-        resolvedRate: resolvedRate,
-        solvedInstances: solvedInstances,
-        unsolvedInstances: unsolvedInstances
-      });
-    }
-
-    // Display analysis results
-    function displayAnalysisResults(results) {
-      document.getElementById('selected-range').textContent = results.timeRange;
-      document.getElementById('total-instances').textContent = results.totalInstances;
-      document.getElementById('resolved-rate').textContent = results.resolvedRate + '%';
-      document.getElementById('solved-count').textContent = results.solvedInstances.length;
-      document.getElementById('unsolved-count').textContent = results.unsolvedInstances.length;
-      
-      // Display solved instances
-      const solvedContainer = document.getElementById('solved-instances');
-      solvedContainer.innerHTML = '';
-      results.solvedInstances.forEach(instance => {
-        const link = createInstanceLink(instance);
-        solvedContainer.appendChild(link);
-      });
-      
-      // Display unsolved instances
-      const unsolvedContainer = document.getElementById('unsolved-instances');
-      unsolvedContainer.innerHTML = '';
-      results.unsolvedInstances.forEach(instance => {
-        const link = createInstanceLink(instance);
-        unsolvedContainer.appendChild(link);
-      });
-      
-      // Show results
-      document.getElementById('analysis-results').style.display = 'block';
-    }
-
-    // Create instance link with date
-    function createInstanceLink(instance) {
-      const container = document.createElement('div');
-      container.className = 'instance-item';
-      
-      const link = document.createElement('a');
-      link.href = `https://github.com/${instance.repo}/pull/${instance.instance_id.split('__').pop().split('-').pop()}`;
-      link.target = '_blank';
-      link.className = 'instance-link';
-      link.textContent = instance.instance_id;
-      
-      const date = document.createElement('span');
-      date.className = 'instance-date';
-      const createdDate = new Date(instance.created_at);
-      date.textContent = createdDate.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      });
-      
-      container.appendChild(link);
-      container.appendChild(date);
-      return container;
-    }
-
     // Initialize the page
     document.addEventListener('DOMContentLoaded', async () => {
       setupSorting();
       setupDatasetTabs();
       setupTimeRangeSlider();
-      setupMethodSelection();
-      setupAnalysis();
       setupSidebarNavigation();
       
       // Load data
@@ -707,7 +704,7 @@
 
     // Update active nav link based on scroll position
     function updateActiveNavOnScroll() {
-      const sections = ['intro', 'news', 'leaderboard', 'analysis', 'submit', 'citation'];
+      const sections = ['intro', 'news', 'leaderboard', 'submit', 'citation'];
       const navLinks = document.querySelectorAll('.nav-link');
       
       let currentSection = '';
