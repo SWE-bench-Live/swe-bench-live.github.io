@@ -296,8 +296,10 @@
       
       return currentInstances.filter(instance => {
         const createdDate = new Date(instance.created_at);
-        const startDate = new Date(startTime.year, startTime.month - 1, 1);
-        const endDate = new Date(endTime.year, endTime.month, 0); // Last day of end month
+        // FIX: Use UTC dates to properly compare with UTC timestamps in the dataset
+        const startDate = new Date(Date.UTC(startTime.year, startTime.month - 1, 1));
+        // FIX: Set end date to end of the last day of the month to include all instances from that day
+        const endDate = new Date(Date.UTC(endTime.year, endTime.month, 0, 23, 59, 59, 999));
         
         return createdDate >= startDate && createdDate <= endDate;
       });
