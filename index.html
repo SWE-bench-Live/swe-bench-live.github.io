@@ -10,179 +10,229 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="title">
-        <img src="assets/swe-bench-live.png" alt="SWE-bench-Live Logo" class="logo"/>
-        <h1>SWE-bench-Live Leaderboard</h1>
+  <!-- Left Sidebar Navigation -->
+  <nav class="sidebar">
+    <div class="sidebar-content">
+      <div class="sidebar-logo">
+        <img src="assets/swe-bench-live.png" alt="SWE-bench-Live" class="sidebar-logo-img">
       </div>
-      <p class="subtitle">Evaluating your AI system on latest software engineering tasks.</p>
-    </div>
-
-    <!-- Navigation buttons -->
-    <div class="nav-buttons">
-      <a href="https://arxiv.org/abs/2505.23419" class="btn btn-paper">
-        <img src="assets/arxiv.svg" alt="ArXiv" class="btn-icon">
-        Paper
-      </a>
-      <a href="https://github.com/microsoft/SWE-bench-Live" class="btn btn-github">
-        <img src="assets/github.svg" alt="GitHub" class="btn-icon">
-        GitHub
-      </a>
-      <a href="https://huggingface.co/swe-bench-live" class="btn btn-huggingface">
-        <img src="assets/huggingface.svg" alt="HuggingFace" class="btn-icon">
-        HuggingFace
-      </a>
-    </div>
-
-    <div class="leaderboard-container">
-      <div class="table-header">
-        <div class="header-left">
-          <div class="stats">
-            <span id="total-models">Loading...</span> methods evaluated on <span id="current-set">Lite</span> set
-          </div>
-        </div>
-        <!-- Dataset selection tabs -->
-        <div class="dataset-tabs">
-          <button class="tab-btn active" data-set="lite">Lite</button>
-          <button class="tab-btn" data-set="full">Full</button>
-        </div>
-      </div>
+      <ul class="sidebar-nav">
+        <li><a href="#intro" class="nav-link">About</a></li>
+        <li><a href="#news" class="nav-link">News</a></li>
+        <li><a href="#leaderboard" class="nav-link">Leaderboard</a></li>
+        <li><a href="#analysis" class="nav-link">Analysis</a></li>
+        <li><a href="#submit" class="nav-link">Submit Results</a></li>
+        <li><a href="#citation" class="nav-link">Citation</a></li>
+      </ul>
       
-      <div class="table-wrapper">
-        <table class="leaderboard-table" id="leaderboard">
-          <thead>
-            <tr>
-              <th class="rank-col">#</th>
-              <th class="model-col">Model</th>
-              <th class="metric-col sortable" data-sort="resolved">
-                <span class="header-text">% Resolved</span>
-                <span class="sort-arrow">↕</span>
-              </th>
-              <th class="metric-col sortable" data-sort="applied">
-                <span class="header-text">% Applied</span>
-                <span class="sort-arrow">↕</span>
-              </th>
-              <th class="metric-col sortable" data-sort="loc_suc">
-                <span class="header-text">% Loc Success</span>
-                <span class="sort-arrow">↕</span>
-              </th>
-              <th class="date-col sortable" data-sort="date">
-                <span class="header-text">Date</span>
-                <span class="sort-arrow">↕</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody id="leaderboard-body">
-            <!-- Data will be populated by JavaScript -->
-          </tbody>
-        </table>
-      </div>
-      
-      <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <p>Loading leaderboard data...</p>
-      </div>
-      
-      <div class="error" id="error" style="display: none;">
-        <p>Error loading data. Please try again later.</p>
+      <div class="sidebar-footer">
+        <a href="https://github.com/microsoft/SWE-bench-Live" class="footer-link" target="_blank" rel="noopener noreferrer">
+          <img src="assets/github.svg" alt="GitHub" class="footer-icon">
+        </a>
       </div>
     </div>
+  </nav>
 
-    <!-- Instance Analysis Section -->
-    <div class="analysis-controls">
-      <div class="controls-header">
-        <p>Select a time range and method to analyze solved/unsolved instances</p>
-      </div>
-      
-      <div class="controls-content">
-        <div class="control-group">
-          <label for="method-select">Method (full set only):</label>
-          <select id="method-select" class="method-select">
-            <option value="">Select a method...</option>
-          </select>
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container">
+      <div class="header">
+        <div class="title">
+          <img src="assets/swe-bench-live.png" alt="SWE-bench-Live Logo" class="logo"/>
+          <h1>SWE-bench-Live</h1>
         </div>
-        
-        <div class="control-group">
-          <label>Time Range:</label>
-          <div class="time-range-container">
-            <div class="time-range-slider">
-              <div class="slider-track"></div>
-              <div class="slider-range" id="slider-range"></div>
-              <input type="range" id="start-slider" class="range-input" min="0" max="16" value="0" step="1">
-              <input type="range" id="end-slider" class="range-input" min="0" max="16" value="16" step="1">
-            </div>
-            <div class="time-labels">
-              <span id="start-label">Jan 2024</span>
-              <span id="end-label">Apr 2025</span>
+        <p class="subtitle">Evaluating your AI system on latest software engineering tasks.</p>
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="nav-buttons">
+        <a href="https://arxiv.org/abs/2505.23419" class="btn btn-paper">
+          <img src="assets/arxiv.svg" alt="ArXiv" class="btn-icon">
+          Paper
+        </a>
+        <a href="https://github.com/microsoft/SWE-bench-Live" class="btn btn-github">
+          <img src="assets/github.svg" alt="GitHub" class="btn-icon">
+          GitHub
+        </a>
+        <a href="https://huggingface.co/swe-bench-live" class="btn btn-huggingface">
+          <img src="assets/huggingface.svg" alt="HuggingFace" class="btn-icon">
+          HuggingFace
+        </a>
+      </div>
+
+      <!-- Introduction Section -->
+      <section id="intro" class="intro-section">
+        <div class="intro-content">
+          <h3>About</h3>
+          <p>
+            SWE-bench-Live is a <b>live benchmark</b> for issue resolving, designed to evaluate an AI system's ability to complete real-world software engineering tasks. Thanks to our automated dataset curation pipeline, we plan to update SWE-bench-Live on a monthly basis to provide the community with up-to-date task instances and support rigorous and contamination-free evaluation.
+          </p>
+        </div>
+      </section>
+
+      <!-- News Section -->
+      <section id="news" class="news-section">
+        <h2>News</h2>
+        <div class="news-container">
+          <div class="news-item">
+            <div class="news-date">May 2025</div>
+            <div class="news-content">
+              <h4>Initial dataset releasing</h4>
+              <p>The initial release of SWE-bench-Live includes <b>1,319</b> latest (created after 2024) task instances, each paired with an instance-level Docker image for test execution, covering <b>93</b> repositories.</p>
             </div>
           </div>
         </div>
-        
-        <button id="analyze-btn" class="analyze-btn" disabled>Analyze</button>
-      </div>
-      
-      <div class="analysis-results" id="analysis-results" style="display: none;">
-        <div class="results-header">
-          <h4>Analysis Results</h4>
-          <div class="results-stats">
-            <div class="stat-item">
-              <span class="stat-label">Time Range:</span>
-              <span class="stat-value" id="selected-range">-</span>
+      </section>
+
+      <div class="leaderboard-container">
+        <div class="table-header">
+          <div class="header-left">
+            <div class="stats">
+              <span id="total-models">Loading...</span> methods evaluated on <span id="current-set">Lite</span> set
             </div>
-            <div class="stat-item">
-              <span class="stat-label">Total Instances:</span>
-              <span class="stat-value" id="total-instances">-</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Resolved Rate:</span>
-              <span class="stat-value" id="resolved-rate">-</span>
-            </div>
+          </div>
+          <!-- Dataset selection tabs -->
+          <div class="dataset-tabs">
+            <button class="tab-btn active" data-set="lite">Lite</button>
+            <button class="tab-btn" data-set="full">Full</button>
           </div>
         </div>
         
-        <div class="results-content">
-          <div class="instance-section">
-            <h5>Solved Instances (<span id="solved-count">0</span>)</h5>
-            <div class="instance-list" id="solved-instances"></div>
+        <div class="table-wrapper">
+          <table class="leaderboard-table" id="leaderboard">
+            <thead>
+              <tr>
+                <th class="rank-col">#</th>
+                <th class="model-col">Model</th>
+                <th class="metric-col sortable" data-sort="resolved">
+                  <span class="header-text">% Resolved</span>
+                  <span class="sort-arrow">↕</span>
+                </th>
+                <th class="metric-col sortable" data-sort="applied">
+                  <span class="header-text">% Applied</span>
+                  <span class="sort-arrow">↕</span>
+                </th>
+                <th class="metric-col sortable" data-sort="loc_suc">
+                  <span class="header-text">% Loc Success</span>
+                  <span class="sort-arrow">↕</span>
+                </th>
+                <th class="date-col sortable" data-sort="date">
+                  <span class="header-text">Date</span>
+                  <span class="sort-arrow">↕</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+              <!-- Data will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <p>Loading leaderboard data...</p>
+        </div>
+        
+        <div class="error" id="error" style="display: none;">
+          <p>Error loading data. Please try again later.</p>
+        </div>
+      </div>
+
+      <!-- Instance Analysis Section -->
+      <div class="analysis-controls" id="analysis">
+        <div class="controls-header">
+          <p>Select a time range and method to analyze solved/unsolved instances</p>
+        </div>
+        
+        <div class="controls-content">
+          <div class="control-group">
+            <label for="method-select">Method (full set only):</label>
+            <select id="method-select" class="method-select">
+              <option value="">Select a method...</option>
+            </select>
           </div>
           
-          <div class="instance-section">
-            <h5>Unsolved Instances (<span id="unsolved-count">0</span>)</h5>
-            <div class="instance-list" id="unsolved-instances"></div>
+          <div class="control-group">
+            <label>Time Range:</label>
+            <div class="time-range-container">
+              <div class="time-range-slider">
+                <div class="slider-track"></div>
+                <div class="slider-range" id="slider-range"></div>
+                <input type="range" id="start-slider" class="range-input" min="0" max="16" value="0" step="1">
+                <input type="range" id="end-slider" class="range-input" min="0" max="16" value="16" step="1">
+              </div>
+              <div class="time-labels">
+                <span id="start-label">Jan 2024</span>
+                <span id="end-label">Apr 2025</span>
+              </div>
+            </div>
+          </div>
+          
+          <button id="analyze-btn" class="analyze-btn" disabled>Analyze</button>
+        </div>
+        
+        <div class="analysis-results" id="analysis-results" style="display: none;">
+          <div class="results-header">
+            <h4>Analysis Results</h4>
+            <div class="results-stats">
+              <div class="stat-item">
+                <span class="stat-label">Time Range:</span>
+                <span class="stat-value" id="selected-range">-</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Total Instances:</span>
+                <span class="stat-value" id="total-instances">-</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Resolved Rate:</span>
+                <span class="stat-value" id="resolved-rate">-</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="results-content">
+            <div class="instance-section">
+              <h5>Solved Instances (<span id="solved-count">0</span>)</h5>
+              <div class="instance-list" id="solved-instances"></div>
+            </div>
+            
+            <div class="instance-section">
+              <h5>Unsolved Instances (<span id="unsolved-count">0</span>)</h5>
+              <div class="instance-list" id="unsolved-instances"></div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="statement">
-      <h3>Submit your results</h3>
-      <p>
-        We coordinate results submission via Pull Requests, see <a href="https://github.com/swe-bench-live/submission" target="_blank">SWE-bench-Live/submissions</a> for instructions.
-      </p>
-    </div>
+      <div class="statement" id="submit">
+        <h3>Submit your results</h3>
+        <p>
+          We coordinate results submission via Pull Requests, see <a href="https://github.com/swe-bench-live/submission" target="_blank">SWE-bench-Live/submissions</a> for instructions.
+        </p>
+      </div>
 
-    <!-- Acknowledgement section -->
-    <div class="statement">
-      <h3>Acknowledgement</h3>
-      <p>
-        SWE-bench-Live is built upon the foundation of <a href="https://www.swebench.com/" target="_blank">SWE-bench</a>.
-        We extend our gratitude to the original SWE-bench team for their pioneering work in software engineering evaluation benchmarks.
-      </p>
-    </div>
+      <!-- Acknowledgement section -->
+      <div class="statement">
+        <h3>Acknowledgement</h3>
+        <p>
+          SWE-bench-Live is built upon the foundation of <a href="https://www.swebench.com/" target="_blank">SWE-bench</a>.
+          We extend our gratitude to the original SWE-bench team for their pioneering work in software engineering evaluation benchmarks.
+        </p>
+      </div>
 
-    <div class="statement">
-      <h3>Citation</h3>
-      <p>
-        If you use SWE-bench-Live in your research, please cite:
-        <pre>
+      <div class="statement" id="citation">
+        <h3>Citation</h3>
+        <p>
+          If you use SWE-bench-Live in your research, please cite:
+          <pre>
 @article{zhang2025swebenchgoeslive,
   title={SWE-bench Goes Live!},
   author={Linghao Zhang and Shilin He and Chaoyun Zhang and Yu Kang and Bowen Li and Chengxing Xie and Junhao Wang and Maoquan Wang and Yufan Huang and Shengyu Fu and Elsie Nallipogu and Qingwei Lin and Yingnong Dang and Saravan Rajmohan and Dongmei Zhang},
   journal={arXiv preprint arXiv:2505.23419},
   year={2025}
 }</pre>
-      </p>
+        </p>
+      </div>
     </div>
   </div>
 
@@ -614,11 +664,86 @@
       setupTimeRangeSlider();
       setupMethodSelection();
       setupAnalysis();
+      setupSidebarNavigation();
       
       // Load data
       await loadDatasetInstances();
       await loadLeaderboard();
     });
+
+    // Setup sidebar navigation
+    function setupSidebarNavigation() {
+      const navLinks = document.querySelectorAll('.nav-link');
+      
+      // Add click handlers for smooth scrolling
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href').substring(1);
+          const targetElement = document.getElementById(targetId);
+          
+          if (targetElement) {
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+            
+            // Update active link
+            updateActiveNavLink(link);
+          }
+        });
+      });
+      
+      // Update active link on scroll
+      window.addEventListener('scroll', throttle(updateActiveNavOnScroll, 100));
+    }
+
+    // Update active navigation link
+    function updateActiveNavLink(activeLink) {
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => link.classList.remove('active'));
+      activeLink.classList.add('active');
+    }
+
+    // Update active nav link based on scroll position
+    function updateActiveNavOnScroll() {
+      const sections = ['intro', 'news', 'leaderboard', 'analysis', 'submit', 'citation'];
+      const navLinks = document.querySelectorAll('.nav-link');
+      
+      let currentSection = '';
+      
+      sections.forEach(sectionId => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= 100 && rect.bottom >= 100) {
+            currentSection = sectionId;
+          }
+        }
+      });
+      
+      if (currentSection) {
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${currentSection}`) {
+            link.classList.add('active');
+          }
+        });
+      }
+    }
+
+    // Throttle function for scroll events
+    function throttle(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
   </script>
 </body>
 </html>
