@@ -3,6 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DS89QH4XXM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-DS89QH4XXM');
+  </script>
+  
   <title>SWE-bench-Live Leaderboard</title>
   <link rel="icon" type="image/png" href="assets/swe-bench-live.png">
   <link rel="stylesheet" href="style.css" />
@@ -658,18 +668,6 @@
       updateSlider();
     }
 
-    // Initialize the page
-    document.addEventListener('DOMContentLoaded', async () => {
-      setupSorting();
-      setupDatasetTabs();
-      setupTimeRangeSlider();
-      setupSidebarNavigation();
-      
-      // Load data
-      await loadDatasetInstances();
-      await loadLeaderboard();
-    });
-
     // Setup sidebar navigation
     function setupSidebarNavigation() {
       const navLinks = document.querySelectorAll('.nav-link');
@@ -743,6 +741,58 @@
         timeout = setTimeout(later, wait);
       };
     }
+
+    // Setup Google Analytics event tracking for navigation buttons
+    function setupNavigationTracking() {
+      // Track Paper button clicks
+      const paperBtn = document.querySelector('.btn-paper');
+      if (paperBtn) {
+        paperBtn.addEventListener('click', () => {
+          gtag('event', 'click', {
+            event_category: 'navigation',
+            event_label: 'paper_button',
+            value: 1
+          });
+        });
+      }
+
+      // Track GitHub button clicks
+      const githubBtn = document.querySelector('.btn-github');
+      if (githubBtn) {
+        githubBtn.addEventListener('click', () => {
+          gtag('event', 'click', {
+            event_category: 'navigation',
+            event_label: 'github_button',
+            value: 1
+          });
+        });
+      }
+
+      // Track HuggingFace button clicks
+      const huggingfaceBtn = document.querySelector('.btn-huggingface');
+      if (huggingfaceBtn) {
+        huggingfaceBtn.addEventListener('click', () => {
+          gtag('event', 'click', {
+            event_category: 'navigation',
+            event_label: 'huggingface_button',
+            value: 1
+          });
+        });
+      }
+    }
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', async () => {
+      setupSorting();
+      setupDatasetTabs();
+      setupTimeRangeSlider();
+      setupSidebarNavigation();
+      setupNavigationTracking(); // Add navigation tracking setup
+      
+      // Load data
+      await loadDatasetInstances();
+      await loadLeaderboard();
+    });
   </script>
 </body>
 </html>
