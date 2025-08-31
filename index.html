@@ -84,7 +84,14 @@
         <h2>News</h2>
         <div class="news-container">
           <div class="news-item">
-            <div class="news-date">June 2025</div>
+            <div class="news-date">Aug 2025</div>
+            <div class="news-content">
+              <h4>Major update</h4>
+              <p>The leaderboard is refreshed! SWE-bench-Live will drop the previous lite/full split and switch to <b>monthly versioning</b>. Going forward, 50 brand-new tasks will be released each month, filtered for quality using an LLM-based process.</p>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-date">Jun 2025</div>
             <div class="news-content">
               <h4>Dataset update</h4>
               <p>We've updated the dataset! Now it includes <b>1,565</b> task instances, covering <b>164</b> repositories.</p>
@@ -100,78 +107,70 @@
         </div>
       </section>
 
-      <div class="leaderboard-container">
-        <div class="table-header">
-          <div class="header-left">
-            <div class="stats">
-              <span id="total-models">Loading...</span> methods evaluated on <span id="current-set">Lite</span> set
-            </div>
-          </div>
-          <!-- Dataset selection tabs -->
-          <div class="dataset-tabs">
-            <button class="tab-btn active" data-set="lite">Lite</button>
-            <button class="tab-btn" data-set="full">Full</button>
-          </div>
-        </div>
-        
-        <!-- Time Range Controls -->
-        <div class="time-range-controls">
-          <div class="controls-content">
-            <div class="control-group">
-              <label>Filter by Time Range: <span id="filtered-instances-inline">-</span> instances</label>
-              <div class="time-range-container">
-                <div class="time-range-slider">
-                  <div class="slider-track"></div>
-                  <div class="slider-range" id="slider-range"></div>
-                  <input type="range" id="start-slider" class="range-input" min="0" max="16" value="0" step="1">
-                  <input type="range" id="end-slider" class="range-input" min="0" max="16" value="16" step="1">
+      <!-- Leaderboard Section -->
+      <div class="leaderboard-section" id="leaderboard">
+        <div class="leaderboard-header">
+          <h2>Leaderboard</h2>
+          <div class="header-controls">
+            <div class="period-selector">
+              <span class="period-label">Period:</span>
+              <button class="period-btn" id="period-btn">
+                <span id="selected-period">Oct 2024 - Mar 2025</span>
+                <svg class="dropdown-icon" width="10" height="6" viewBox="0 0 10 6">
+                  <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                </svg>
+              </button>
+              <div class="period-dropdown" id="period-dropdown">
+                <div class="dropdown-controls">
+                  <button class="select-all-btn" id="select-all-btn">All</button>
+                  <button class="select-none-btn" id="select-none-btn">Clear</button>
+                  <button class="apply-btn" id="apply-splits-btn">Apply</button>
                 </div>
-                <div class="time-labels">
-                  <span id="start-label">Jan 2024</span>
-                  <span id="end-label">Apr 2025</span>
+                <div class="split-options" id="split-options">
+                  <!-- Will be populated by JavaScript -->
                 </div>
+                <div class="dropdown-hint">More results coming soon</div>
               </div>
             </div>
+            <div class="header-stats">
+              <span class="stat-item"><strong id="total-models">-</strong> results</span>
+              <span class="stat-separator">•</span>
+              <span class="stat-item"><strong id="total-instances">-</strong> instances</span>
+            </div>
           </div>
         </div>
-        
-        <div class="table-wrapper">
-          <table class="leaderboard-table" id="leaderboard">
-            <thead>
-              <tr>
-                <th class="rank-col">#</th>
-                <th class="model-col">Model</th>
-                <th class="metric-col sortable" data-sort="resolved">
-                  <span class="header-text">% Resolved</span>
-                  <span class="sort-arrow">↕</span>
-                </th>
-                <th class="metric-col sortable" data-sort="loc_suc">
-                  <span class="header-text">% Loc Success</span>
-                  <span class="sort-arrow">↕</span>
-                </th>
-                <th class="metric-col sortable" data-sort="applied">
-                  <span class="header-text">% Applied</span>
-                  <span class="sort-arrow">↕</span>
-                </th>
-                <th class="date-col sortable" data-sort="date">
-                  <span class="header-text">Date</span>
-                  <span class="sort-arrow">↕</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody id="leaderboard-body">
-              <!-- Data will be populated by JavaScript -->
-            </tbody>
-          </table>
-        </div>
-        
-        <div class="loading" id="loading">
-          <div class="spinner"></div>
-          <p>Loading leaderboard data...</p>
-        </div>
-        
-        <div class="error" id="error" style="display: none;">
-          <p>Error loading data. Please try again later.</p>
+
+        <div class="leaderboard-container">
+          <div class="table-wrapper">
+            <table class="leaderboard-table" id="leaderboard">
+              <thead>
+                <tr>
+                  <th class="rank-col">Rank</th>
+                  <th class="model-col">Method</th>
+                  <th class="score-col sortable sorted-desc" data-sort="resolved">
+                    <span class="header-text">Resolved</span>
+                    <span class="sort-arrow">↓</span>
+                  </th>
+                  <th class="date-col sortable" data-sort="date">
+                    <span class="header-text">Date</span>
+                    <span class="sort-arrow">↕</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-body">
+                <!-- Data will be populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading leaderboard data...</p>
+          </div>
+          
+          <div class="error" id="error" style="display: none;">
+            <p>Error loading data. Please try again later.</p>
+          </div>
         </div>
       </div>
 
@@ -207,599 +206,6 @@
     </div>
   </div>
 
-  <script>
-    // Logo mapping for different organizations
-    const logoMap = {
-      'SWE-agent': 'assets/logos/SWE-agent.png',
-      'OpenHands': 'assets/logos/OpenHands.png',
-      'Agentless': 'assets/logos/Agentless.png'
-    };
-
-    // Current sort configuration
-    let currentSort = { column: 'resolved', direction: 'desc' };
-    let currentDataset = 'lite';
-    let datasetInstances = [];
-    let allReports = [];
-    let currentTimeRange = { start: 0, end: 16 }; // Default to full range
-    let datasetTimeRanges = { lite: { min: 0, max: 16 }, full: { min: 0, max: 16 } };
-
-    // Time range mapping (months from Jan 2024 to Apr 2025)
-    const timeRangeMap = [
-      { label: 'Jan 2024', year: 2024, month: 1 },
-      { label: 'Feb 2024', year: 2024, month: 2 },
-      { label: 'Mar 2024', year: 2024, month: 3 },
-      { label: 'Apr 2024', year: 2024, month: 4 },
-      { label: 'May 2024', year: 2024, month: 5 },
-      { label: 'Jun 2024', year: 2024, month: 6 },
-      { label: 'Jul 2024', year: 2024, month: 7 },
-      { label: 'Aug 2024', year: 2024, month: 8 },
-      { label: 'Sep 2024', year: 2024, month: 9 },
-      { label: 'Oct 2024', year: 2024, month: 10 },
-      { label: 'Nov 2024', year: 2024, month: 11 },
-      { label: 'Dec 2024', year: 2024, month: 12 },
-      { label: 'Jan 2025', year: 2025, month: 1 },
-      { label: 'Feb 2025', year: 2025, month: 2 },
-      { label: 'Mar 2025', year: 2025, month: 3 },
-      { label: 'Apr 2025', year: 2025, month: 4 },
-      { label: 'May 2025', year: 2025, month: 5 }
-    ];
-
-    // Load dataset instances and determine time ranges for each split
-    async function loadDatasetInstances() {
-      try {
-        const response = await fetch('dataset.jsonl');
-        const text = await response.text();
-        const lines = text.trim().split('\n').filter(line => line.trim());
-        datasetInstances = lines.map(line => JSON.parse(line));
-        
-        // Calculate time ranges for each dataset split
-        calculateDatasetTimeRanges();
-      } catch (error) {
-        console.error('Error loading dataset instances:', error);
-      }
-    }
-
-    // Calculate the actual time ranges for each dataset split
-    function calculateDatasetTimeRanges() {
-      const liteInstances = datasetInstances.filter(instance => instance.is_lite);
-      const fullInstances = datasetInstances; // Changed to include all instances
-      
-      datasetTimeRanges.lite = calculateTimeRange(liteInstances);
-      datasetTimeRanges.full = calculateTimeRange(fullInstances);
-    }
-
-    // Calculate time range for a set of instances
-    function calculateTimeRange(instances) {
-      if (instances.length === 0) return { min: 0, max: 16 };
-      
-      const dates = instances.map(instance => new Date(instance.created_at));
-      const minDate = new Date(Math.min(...dates));
-      const maxDate = new Date(Math.max(...dates));
-      
-      // Convert to time range indices
-      const minIndex = findTimeRangeIndex(minDate);
-      const maxIndex = findTimeRangeIndex(maxDate);
-      
-      return { min: minIndex, max: maxIndex };
-    }
-
-    // Find the time range index for a given date
-    function findTimeRangeIndex(date) {
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-      
-      for (let i = 0; i < timeRangeMap.length; i++) {
-        const range = timeRangeMap[i];
-        if (range.year === year && range.month === month) {
-          return i;
-        }
-      }
-      
-      // If not found, find closest
-      if (year < 2024 || (year === 2024 && month < 1)) return 0;
-      if (year > 2025 || (year === 2025 && month > 5)) return timeRangeMap.length - 1;
-      
-      return 0;
-    }
-
-    // Get filtered instances based on current time range and dataset
-    function getFilteredInstances() {
-      const currentInstances = datasetInstances.filter(instance => 
-        currentDataset === 'lite' ? instance.is_lite : true // Changed to include all instances for full set
-      );
-      
-      const startTime = timeRangeMap[currentTimeRange.start];
-      const endTime = timeRangeMap[currentTimeRange.end];
-      
-      return currentInstances.filter(instance => {
-        const createdDate = new Date(instance.created_at);
-        // FIX: Use UTC dates to properly compare with UTC timestamps in the dataset
-        const startDate = new Date(Date.UTC(startTime.year, startTime.month - 1, 1));
-        // FIX: Set end date to end of the last day of the month to include all instances from that day
-        const endDate = new Date(Date.UTC(endTime.year, endTime.month, 0, 23, 59, 59, 999));
-        
-        return createdDate >= startDate && createdDate <= endDate;
-      });
-    }
-
-    // Recalculate metrics for filtered data
-    function recalculateMetricsForTimeRange(reports, filteredInstanceIds) {
-      return reports.map(report => {
-        const newReport = { ...report };
-        
-        // Filter resolved, applied, and located IDs to only include filtered instances
-        const filteredResolved = (report.resolved || []).filter(id => filteredInstanceIds.has(id));
-        const filteredApplied = (report.applied || []).filter(id => filteredInstanceIds.has(id));
-        const filteredLocated = (report.located || []).filter(id => filteredInstanceIds.has(id));
-        
-        const total = filteredInstanceIds.size;
-        
-        if (total > 0) {
-          newReport.resolved_percentage = ((filteredResolved.length / total) * 100).toFixed(2);
-          newReport.applied_percentage = ((filteredApplied.length / total) * 100).toFixed(2);
-          newReport.loc_suc_percentage = ((filteredLocated.length / total) * 100).toFixed(2);
-        } else {
-          newReport.resolved_percentage = "0.00";
-          newReport.applied_percentage = "0.00";
-          newReport.loc_suc_percentage = "0.00";
-        }
-        
-        newReport.filtered_total = total;
-        newReport.resolved_ids = filteredResolved;
-        
-        return newReport;
-      });
-    }
-
-    // Load and display leaderboard data
-    async function loadLeaderboard() {
-      try {
-        const response = await fetch('reports-0605.jsonl');
-        const text = await response.text();
-        
-        // Parse JSONL format
-        const lines = text.trim().split('\n').filter(line => line.trim());
-        allReports = lines.map(line => {
-          const item = JSON.parse(line);
-          
-          // Calculate percentages from ID arrays and total
-          if (item.resolved && item.total) {
-            item.resolved_percentage = ((item.resolved.length / item.total) * 100).toFixed(2);
-          } else {
-            item.resolved_percentage = "0.00";
-          }
-          
-          if (item.applied && item.total) {
-            item.applied_percentage = ((item.applied.length / item.total) * 100).toFixed(2);
-          } else {
-            item.applied_percentage = "0.00";
-          }
-          
-          if (item.located && item.total) {
-            item.loc_suc_percentage = ((item.located.length / item.total) * 100).toFixed(2);
-          } else {
-            item.loc_suc_percentage = "0.00";
-          }
-          
-          // Keep the resolved_ids for compatibility
-          item.resolved_ids = item.resolved || [];
-          
-          return item;
-        });
-        
-        // Update time range sliders for current dataset
-        updateTimeRangeSliders();
-        
-        // Filter and display data
-        updateLeaderboardWithTimeRange();
-        
-        document.getElementById('loading').style.display = 'none';
-        
-      } catch (error) {
-        console.error('Error loading leaderboard:', error);
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('error').style.display = 'block';
-      }
-    }
-
-    // Update leaderboard with current time range
-    function updateLeaderboardWithTimeRange() {
-      // Get filtered instances
-      const filteredInstances = getFilteredInstances();
-      const filteredInstanceIds = new Set(filteredInstances.map(inst => inst.instance_id));
-      
-      // Filter by current dataset
-      let data = allReports.filter(item => item.set === currentDataset);
-      
-      // Recalculate metrics for filtered time range
-      data = recalculateMetricsForTimeRange(data, filteredInstanceIds);
-      
-      // Sort by current sort configuration
-      sortData(data, currentSort.column, currentSort.direction);
-      
-      displayLeaderboard(data);
-      document.getElementById('total-models').textContent = data.length;
-      document.getElementById('current-set').textContent = currentDataset.charAt(0).toUpperCase() + currentDataset.slice(1);
-      document.getElementById('filtered-instances-inline').textContent = filteredInstances.length;
-    }
-
-    // Update time range sliders based on current dataset
-    function updateTimeRangeSliders() {
-      const range = datasetTimeRanges[currentDataset];
-      const startSlider = document.getElementById('start-slider');
-      const endSlider = document.getElementById('end-slider');
-      
-      // Update slider ranges
-      startSlider.min = range.min;
-      startSlider.max = range.max;
-      endSlider.min = range.min;
-      endSlider.max = range.max;
-      
-      // Reset to full range for current dataset
-      currentTimeRange = { start: range.min, end: range.max };
-      startSlider.value = range.min;
-      endSlider.value = range.max;
-      
-      updateSliderLabels();
-    }
-
-    // Update slider labels and visual range
-    function updateSliderLabels() {
-      const startSlider = document.getElementById('start-slider');
-      const endSlider = document.getElementById('end-slider');
-      const startLabel = document.getElementById('start-label');
-      const endLabel = document.getElementById('end-label');
-      const sliderRange = document.getElementById('slider-range');
-      
-      const startVal = parseInt(startSlider.value);
-      const endVal = parseInt(endSlider.value);
-      
-      currentTimeRange = { start: Math.min(startVal, endVal), end: Math.max(startVal, endVal) };
-      
-      startLabel.textContent = timeRangeMap[currentTimeRange.start].label;
-      endLabel.textContent = timeRangeMap[currentTimeRange.end].label;
-      
-      // Update visual range
-      const range = datasetTimeRanges[currentDataset];
-      const totalRange = range.max - range.min;
-      const percent1 = totalRange > 0 ? ((currentTimeRange.start - range.min) / totalRange) * 100 : 0;
-      const percent2 = totalRange > 0 ? ((currentTimeRange.end - range.min) / totalRange) * 100 : 100;
-      
-      sliderRange.style.left = percent1 + '%';
-      sliderRange.style.width = (percent2 - percent1) + '%';
-    }
-
-    // Sort data by column with priority sorting
-    function sortData(data, column, direction) {
-      data.sort((a, b) => {
-        // Multi-level priority sorting: resolved > loc_suc > applied
-        if (column === 'resolved' || column === 'loc_suc' || column === 'applied') {
-          const resolvedA = parseFloat(a.resolved_percentage);
-          const resolvedB = parseFloat(b.resolved_percentage);
-          const locSucA = parseFloat(a.loc_suc_percentage);
-          const locSucB = parseFloat(b.loc_suc_percentage);
-          const appliedA = parseFloat(a.applied_percentage);
-          const appliedB = parseFloat(b.applied_percentage);
-          
-          // Primary sort by resolved (highest priority)
-          if (resolvedA !== resolvedB) {
-            return direction === 'desc' ? resolvedB - resolvedA : resolvedA - resolvedB;
-          }
-          
-          // Secondary sort by loc_suc (medium priority)
-          if (locSucA !== locSucB) {
-            return direction === 'desc' ? locSucB - locSucA : locSucA - locSucB;
-          }
-          
-          // Tertiary sort by applied (lowest priority)
-          return direction === 'desc' ? appliedB - appliedA : appliedA - appliedB;
-        }
-        
-        // Original sorting logic for other columns
-        let aVal, bVal;
-        if (column === 'date') {
-          aVal = new Date(a[column]);
-          bVal = new Date(b[column]);
-        } else {
-          aVal = a[column].toLowerCase();
-          bVal = b[column].toLowerCase();
-        }
-        
-        if (direction === 'asc') {
-          return aVal > bVal ? 1 : -1;
-        } else {
-          return aVal < bVal ? 1 : -1;
-        }
-      });
-    }
-
-    // Display leaderboard data
-    function displayLeaderboard(data) {
-      const tbody = document.getElementById('leaderboard-body');
-      tbody.innerHTML = '';
-      
-      if (data.length === 0) {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td colspan="6" style="text-align: center; padding: 3rem; color: #64748b;">
-            <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">📊</div>
-            <div>No results available for ${currentDataset.charAt(0).toUpperCase() + currentDataset.slice(1)} dataset</div>
-            <div style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">Please check back later or try a different dataset</div>
-          </td>
-        `;
-        tbody.appendChild(row);
-        return;
-      }
-      
-      data.forEach((item, index) => {
-        const row = document.createElement('tr');
-        
-        // Add rank badge for top 3
-        let rankBadge = '';
-        if (index === 0) rankBadge = '<span class="rank-badge gold">🥇</span>';
-        else if (index === 1) rankBadge = '<span class="rank-badge silver">🥈</span>';
-        else if (index === 2) rankBadge = '<span class="rank-badge bronze">🥉</span>';
-        
-        const logoSrc = logoMap[item.logo] || 'assets/logos/swe-agent.png';
-        const formattedDate = new Date(item.date).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit'
-        });
-        
-        row.innerHTML = `
-          <td class="rank-col">${rankBadge}${index + 1}</td>
-          <td class="model-col">
-            <div class="model-info">
-              <div class="model-logo-frame">
-                <img src="${logoSrc}" alt="${item.logo}" class="model-logo-img">
-              </div>
-              <span class="model-name">${item.name}</span>
-            </div>
-          </td>
-          <td class="metric-col">
-            <div class="metric-value">
-              <span class="percentage">${item.resolved_percentage}%</span>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${item.resolved_percentage}%"></div>
-              </div>
-            </div>
-          </td>
-          <td class="metric-col">
-            <div class="metric-value">
-              <span class="percentage">${item.loc_suc_percentage}%</span>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${item.loc_suc_percentage}%"></div>
-              </div>
-            </div>
-          </td>
-          <td class="metric-col">
-            <div class="metric-value">
-              <span class="percentage">${item.applied_percentage}%</span>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${item.applied_percentage}%"></div>
-              </div>
-            </div>
-          </td>
-          <td class="date-col">${formattedDate}</td>
-        `;
-        
-        tbody.appendChild(row);
-      });
-    }
-
-    // Handle column sorting
-    function setupSorting() {
-      const sortableHeaders = document.querySelectorAll('.sortable');
-      
-      sortableHeaders.forEach(header => {
-        header.addEventListener('click', () => {
-          const column = header.dataset.sort;
-          let direction = 'desc';
-          
-          // Toggle direction if clicking the same column
-          if (currentSort.column === column) {
-            direction = currentSort.direction === 'desc' ? 'asc' : 'desc';
-          }
-          
-          currentSort = { column, direction };
-          
-          // Update sort arrows
-          sortableHeaders.forEach(h => {
-            const arrow = h.querySelector('.sort-arrow');
-            arrow.textContent = '↕';
-            h.classList.remove('sorted-asc', 'sorted-desc');
-          });
-          
-          const arrow = header.querySelector('.sort-arrow');
-          arrow.textContent = direction === 'desc' ? '↓' : '↑';
-          header.classList.add(direction === 'desc' ? 'sorted-desc' : 'sorted-asc');
-          
-          // Re-calculate and display data with current time range
-          updateLeaderboardWithTimeRange();
-        });
-      });
-    }
-
-    // Handle dataset tab switching
-    function setupDatasetTabs() {
-      const tabButtons = document.querySelectorAll('.tab-btn');
-      
-      tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          // Update active tab
-          tabButtons.forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
-          
-          // Update current dataset
-          currentDataset = button.dataset.set;
-          
-          // Update time range sliders for new dataset
-          updateTimeRangeSliders();
-          
-          // Show loading and reload data
-          document.getElementById('loading').style.display = 'block';
-          document.getElementById('error').style.display = 'none';
-          updateLeaderboardWithTimeRange();
-          document.getElementById('loading').style.display = 'none';
-        });
-      });
-    }
-
-    // Setup time range slider
-    function setupTimeRangeSlider() {
-      const startSlider = document.getElementById('start-slider');
-      const endSlider = document.getElementById('end-slider');
-      
-      function updateSlider() {
-        const startVal = parseInt(startSlider.value);
-        const endVal = parseInt(endSlider.value);
-        
-        // Ensure start is always less than or equal to end
-        if (startVal > endVal) {
-          if (this === startSlider) {
-            endSlider.value = startVal;
-          } else {
-            startSlider.value = endVal;
-          }
-        }
-        
-        updateSliderLabels();
-        updateLeaderboardWithTimeRange();
-      }
-      
-      startSlider.addEventListener('input', updateSlider);
-      endSlider.addEventListener('input', updateSlider);
-      
-      // Initial update
-      updateSlider();
-    }
-
-    // Setup sidebar navigation
-    function setupSidebarNavigation() {
-      const navLinks = document.querySelectorAll('.nav-link');
-      
-      // Add click handlers for smooth scrolling
-      navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const targetId = link.getAttribute('href').substring(1);
-          const targetElement = document.getElementById(targetId);
-          
-          if (targetElement) {
-            targetElement.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
-            
-            // Update active link
-            updateActiveNavLink(link);
-          }
-        });
-      });
-      
-      // Update active link on scroll
-      window.addEventListener('scroll', throttle(updateActiveNavOnScroll, 100));
-    }
-
-    // Update active navigation link
-    function updateActiveNavLink(activeLink) {
-      const navLinks = document.querySelectorAll('.nav-link');
-      navLinks.forEach(link => link.classList.remove('active'));
-      activeLink.classList.add('active');
-    }
-
-    // Update active nav link based on scroll position
-    function updateActiveNavOnScroll() {
-      const sections = ['intro', 'news', 'leaderboard', 'submit', 'citation'];
-      const navLinks = document.querySelectorAll('.nav-link');
-      
-      let currentSection = '';
-      
-      sections.forEach(sectionId => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            currentSection = sectionId;
-          }
-        }
-      });
-      
-      if (currentSection) {
-        navLinks.forEach(link => {
-          link.classList.remove('active');
-          if (link.getAttribute('href') === `#${currentSection}`) {
-            link.classList.add('active');
-          }
-        });
-      }
-    }
-
-    // Throttle function for scroll events
-    function throttle(func, wait) {
-      let timeout;
-      return function executedFunction(...args) {
-        const later = () => {
-          clearTimeout(timeout);
-          func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-      };
-    }
-
-    // Setup Google Analytics event tracking for navigation buttons
-    function setupNavigationTracking() {
-      // Track Paper button clicks
-      const paperBtn = document.querySelector('.btn-paper');
-      if (paperBtn) {
-        paperBtn.addEventListener('click', () => {
-          gtag('event', 'click', {
-            event_category: 'navigation',
-            event_label: 'paper_button',
-            value: 1
-          });
-        });
-      }
-
-      // Track GitHub button clicks
-      const githubBtn = document.querySelector('.btn-github');
-      if (githubBtn) {
-        githubBtn.addEventListener('click', () => {
-          gtag('event', 'click', {
-            event_category: 'navigation',
-            event_label: 'github_button',
-            value: 1
-          });
-        });
-      }
-
-      // Track HuggingFace button clicks
-      const huggingfaceBtn = document.querySelector('.btn-huggingface');
-      if (huggingfaceBtn) {
-        huggingfaceBtn.addEventListener('click', () => {
-          gtag('event', 'click', {
-            event_category: 'navigation',
-            event_label: 'huggingface_button',
-            value: 1
-          });
-        });
-      }
-    }
-
-    // Initialize the page
-    document.addEventListener('DOMContentLoaded', async () => {
-      setupSorting();
-      setupDatasetTabs();
-      setupTimeRangeSlider();
-      setupSidebarNavigation();
-      setupNavigationTracking(); // Add navigation tracking setup
-      
-      // Load data
-      await loadDatasetInstances();
-      await loadLeaderboard();
-    });
-  </script>
+  <script src="leaderboard.js"></script>
 </body>
 </html>
