@@ -837,7 +837,27 @@ body {
 /* Leaderboard container */
 .leaderboard-container {
   background: white;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+/* Scrollbar styling for the table container */
+.leaderboard-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.leaderboard-container::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+.leaderboard-container::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 4px;
+}
+
+.leaderboard-container::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
 }
 
 .table-header {
@@ -875,6 +895,7 @@ body {
 
 .leaderboard-table {
   width: 100%;
+  min-width: 600px; /* Ensure table maintains structure on mobile */
   border-collapse: collapse;
   font-size: 0.9rem;
   table-layout: fixed;
