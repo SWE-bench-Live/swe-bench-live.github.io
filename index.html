@@ -112,25 +112,10 @@
         <div class="leaderboard-header">
           <h2>Leaderboard</h2>
           <div class="header-controls">
-            <div class="period-selector">
-              <span class="period-label">Period:</span>
-              <button class="period-btn" id="period-btn">
-                <span id="selected-period">Oct 2024 - Mar 2025</span>
-                <svg class="dropdown-icon" width="10" height="6" viewBox="0 0 10 6">
-                  <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" fill="none"/>
-                </svg>
-              </button>
-              <div class="period-dropdown" id="period-dropdown">
-                <div class="dropdown-controls">
-                  <button class="select-all-btn" id="select-all-btn">All</button>
-                  <button class="select-none-btn" id="select-none-btn">Clear</button>
-                  <button class="apply-btn" id="apply-splits-btn">Apply</button>
-                </div>
-                <div class="split-options" id="split-options">
-                  <!-- Will be populated by JavaScript -->
-                </div>
-                <div class="dropdown-hint">More results coming soon</div>
-              </div>
+            <div class="dataset-tabs" id="set-tabs">
+              <button class="tab-btn active" data-set="lite" id="set-lite">Lite</button>
+              <button class="tab-btn" data-set="full" id="set-full">Full</button>
+              <button class="tab-btn" data-set="verified" id="set-verified">Verified</button>
             </div>
             <div class="header-stats">
               <span class="stat-item"><strong id="total-models">-</strong> results</span>

@@ -2,13 +2,15 @@
 const logoMap = {
   'SWE-agent': 'assets/logos/SWE-agent.png',
   'OpenHands': 'assets/logos/OpenHands.png',
-  'Agentless': 'assets/logos/Agentless.png'
+  'Agentless': 'assets/logos/Agentless.png',
+  'qwen': "assets/logos/qwen.png"
 };
 
 // Current sort configuration
 let currentSort = { column: 'resolved', direction: 'desc' };
 let allReports = [];
 let selectedSplits = new Set();
+let selectedSet = 'lite';
 
 // Split name mapping for display
 const splitNameMap = {
@@ -37,19 +39,7 @@ const availableSplits = ['202410', '202411', '202412', '202501', '202502', '2025
 
 // Load splits data
 async function loadSplits() {
-  try {
-    // Initialize with available splits (Oct 2024 - Mar 2025)
-    selectedSplits.clear();
-    availableSplits.forEach(split => {
-      selectedSplits.add(split);
-    });
-    
-    // Create split selector UI
-    createSplitSelector();
-    
-  } catch (error) {
-    console.error('Error loading splits:', error);
-  }
+  // Period selector removed; keep no-op for compatibility
 }
 
 // Create split selector UI
@@ -143,23 +133,22 @@ function applySplitSelection() {
 
 // Update split summary text
 function updateSplitSummary() {
-  const totalInstances = selectedSplits.size * 50; // Each split has 50 instances
-  
-  let periodText;
-  if (selectedSplits.size === 0) {
-    periodText = 'No period selected';
-  } else if (selectedSplits.size === 1) {
-    const split = Array.from(selectedSplits)[0];
-    periodText = splitNameMap[split] || split;
-  } else {
-    const sortedSelected = Array.from(selectedSplits).sort();
-    const first = splitNameMap[sortedSelected[0]] || sortedSelected[0];
-    const last = splitNameMap[sortedSelected[sortedSelected.length - 1]] || sortedSelected[sortedSelected.length - 1];
-    periodText = `${first} - ${last}`;
+  // With period removed, just show instances for selected set
+  const total = getMostCommonTotal(selectedSet);
+  document.getElementById('total-instances').textContent = total != null ? total : '-';
+}
+
+// Get the most common `total` value for a given set from reports
+function getMostCommonTotal(setName) {
+  const items = allReports.filter(r => (r.set || '').toLowerCase() === setName && typeof r.total === 'number');
+  if (!items.length) return null;
+  const counts = new Map();
+  for (const r of items) counts.set(r.total, (counts.get(r.total) || 0) + 1);
+  let best = null, bestCount = -1;
+  for (const [val, cnt] of counts.entries()) {
+    if (cnt > bestCount) { best = val; bestCount = cnt; }
   }
-  
-  document.getElementById('selected-period').textContent = periodText;
-  document.getElementById('total-instances').textContent = totalInstances;
+  return best;
 }
 
 // Load and display leaderboard data
@@ -180,11 +169,7 @@ async function loadLeaderboard() {
           report.resolved_percentage = "0.00";
         }
         return report;
-      })
-      .filter(report => report.set === 'lite'); // Only show lite results
-    
-    // Update stats
-    document.getElementById('total-models').textContent = allReports.length;
+      });
     
     updateLeaderboard();
     document.getElementById('loading').style.display = 'none';
@@ -198,14 +183,17 @@ async function loadLeaderboard() {
 
 // Update leaderboard display
 function updateLeaderboard() {
-  // Since we're using pre-calculated scores, just display them directly
-  // No need to filter by splits - the scores are already calculated for the lite set (300 instances)
+  // Filter by selected set
+  const filtered = allReports.filter(r => (r.set || '').toLowerCase() === selectedSet);
   
   // Sort data
-  const sortedData = sortReports(allReports);
+  const sortedData = sortReports(filtered);
   
   // Render table
   renderTable(sortedData);
+  
+  // Update stats
+  document.getElementById('total-models').textContent = filtered.length;
 }
 
 // Sort reports
@@ -245,7 +233,7 @@ function renderTable(data) {
     const row = document.createElement('tr');
     row.innerHTML = `
       <td colspan="4" style="text-align: center; padding: 3rem; color: #666666;">
-        No results available for the selected period.
+        No results available for the selected set.
       </td>
     `;
     tbody.appendChild(row);
@@ -344,6 +332,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadSplits();
   await loadLeaderboard();
   setupSorting();
+  setupSetTabs();
   initSmoothScrolling();
   updateSplitSummary();
 });
+
+// Setup dataset tabs for selecting set
+function setupSetTabs() {
+  const container = document.getElementById('set-tabs');
+  if (!container) return;
+  const buttons = container.querySelectorAll('.tab-btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedSet = (btn.dataset.set || 'lite').toLowerCase();
+      updateLeaderboard();
+      updateSplitSummary();
+    });
+  });
+}
