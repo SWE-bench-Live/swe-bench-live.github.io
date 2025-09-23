@@ -286,6 +286,15 @@ body {
   font-weight: 600;
 }
 
+.news-content a {
+  color: #18d26e;
+  text-decoration: none;
+  font-weight: 500;
+}
+.news-content a:hover {
+  text-decoration: underline;
+}
+
 /* Leaderboard Section */
 .leaderboard-section {
   background: white;
