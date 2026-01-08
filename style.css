@@ -739,8 +739,7 @@ body {
   background: #fff3cd;
   border: 1px solid #ffc107;
   border-radius: 6px;
-  display: inline-block;
-  max-width: 600px;
+  display: block;
 }
 
 .notice strong {

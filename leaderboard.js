@@ -162,11 +162,23 @@ async function loadLeaderboard() {
     allReports = lines
       .map(line => {
         const report = JSON.parse(line);
-        // Use the pre-calculated percentage from the total field
-        if (report.resolved && report.total) {
-          report.resolved_percentage = ((report.resolved.length / report.total) * 100).toFixed(2);
+        // Handle resolved field as either int or list
+        let resolvedCount = 0;
+        if (typeof report.resolved === 'number') {
+          // If resolved is a number, use it directly
+          resolvedCount = report.resolved;
+        } else if (Array.isArray(report.resolved)) {
+          // If resolved is an array, get its length
+          resolvedCount = report.resolved.length;
+        }
+        
+        // Calculate percentage based on total
+        if (report.total && report.total > 0) {
+          report.resolved_percentage = ((resolvedCount / report.total) * 100).toFixed(2);
+          report.resolved_count = resolvedCount;
         } else {
           report.resolved_percentage = "0.00";
+          report.resolved_count = 0;
         }
         return report;
       });
