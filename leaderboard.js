@@ -195,8 +195,8 @@ async function loadLeaderboard() {
 
 // Update leaderboard display
 function updateLeaderboard() {
-  // Filter by selected set
-  const filtered = allReports.filter(r => (r.set || '').toLowerCase() === selectedSet);
+  // Filter by selected set (normalize both to lowercase for comparison)
+  const filtered = allReports.filter(r => (r.set || '').toLowerCase() === selectedSet.toLowerCase());
   
   // Sort data
   const sortedData = sortReports(filtered);
