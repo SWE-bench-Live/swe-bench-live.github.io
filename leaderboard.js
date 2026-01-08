@@ -3,7 +3,8 @@ const logoMap = {
   'SWE-agent': 'assets/logos/SWE-agent.png',
   'OpenHands': 'assets/logos/OpenHands.png',
   'Agentless': 'assets/logos/Agentless.png',
-  'qwen': "assets/logos/qwen.png"
+  'qwen': "assets/logos/qwen.png",
+  'claude': "assets/logos/claude.png"
 };
 
 // Current sort configuration
