@@ -1,3 +1,21 @@
+{"name": "Claude Code + DeepSeek-V3.1-Terminus", "set": "java", "total": 62, "logo": "claude", "date": "2026-01-08", "resolved": 14}
+{"name": "Claude Code + DeepSeek-V3.1-Terminus", "set": "rust", "total": 45, "logo": "claude", "date": "2026-01-08", "resolved": 8}
+{"name": "Claude Code + DeepSeek-V3.1-Terminus", "set": "go", "total": 68, "logo": "claude", "date": "2026-01-08", "resolved": 20}
+{"name": "Claude Code + DeepSeek-V3.1-Terminus", "set": "tsjs", "total": 162, "logo": "claude", "date": "2026-01-08", "resolved": 25}
+{"name": "Claude Code + DeepSeek-V3.1-Terminus", "set": "csharp", "total": 28, "logo": "claude", "date": "2026-01-08", "resolved": 4}
+{"name": "Claude Code + DeepSeek-V3.1-Terminus", "set": "ccpp", "total": 48, "logo": "claude", "date": "2026-01-08", "resolved": 5}
+{"name": "OpenHands + DeepSeek-V3.1-Terminus", "set": "java", "total": 62, "logo": "OpenHands", "date": "2026-01-08", "resolved": 15}
+{"name": "OpenHands + DeepSeek-V3.1-Terminus", "set": "rust", "total": 45, "logo": "OpenHands", "date": "2026-01-08", "resolved": 12}
+{"name": "OpenHands + DeepSeek-V3.1-Terminus", "set": "go", "total": 68, "logo": "OpenHands", "date": "2026-01-08", "resolved": 15}
+{"name": "OpenHands + DeepSeek-V3.1-Terminus", "set": "tsjs", "total": 162, "logo": "OpenHands", "date": "2026-01-08", "resolved": 18}
+{"name": "OpenHands + DeepSeek-V3.1-Terminus", "set": "csharp", "total": 28, "logo": "OpenHands", "date": "2026-01-08", "resolved": 5}
+{"name": "OpenHands + DeepSeek-V3.1-Terminus", "set": "ccpp", "total": 48, "logo": "OpenHands", "date": "2026-01-08", "resolved": 12}
+{"name": "SWE-agent + DeepSeek-V3.1-Terminus", "set": "java", "total": 62, "logo": "SWE-agent", "date": "2026-01-08", "resolved": 17}
+{"name": "SWE-agent + DeepSeek-V3.1-Terminus", "set": "rust", "total": 45, "logo": "SWE-agent", "date": "2026-01-08", "resolved": 13}
+{"name": "SWE-agent + DeepSeek-V3.1-Terminus", "set": "go", "total": 68, "logo": "SWE-agent", "date": "2026-01-08", "resolved": 14}
+{"name": "SWE-agent + DeepSeek-V3.1-Terminus", "set": "tsjs", "total": 162, "logo": "SWE-agent", "date": "2026-01-08", "resolved": 17}
+{"name": "SWE-agent + DeepSeek-V3.1-Terminus", "set": "csharp", "total": 28, "logo": "SWE-agent", "date": "2026-01-08", "resolved": 6}
+{"name": "SWE-agent + DeepSeek-V3.1-Terminus", "set": "ccpp", "total": 48, "logo": "SWE-agent", "date": "2026-01-08", "resolved": 13}
 {"name": "OpenHands + Gemini3-Flash", "set": "java", "total": 62, "logo": "OpenHands", "date": "2026-01-08", "resolved": 15}
 {"name": "OpenHands + Gemini3-Flash", "set": "rust", "total": 45, "logo": "OpenHands", "date": "2026-01-08", "resolved": 16}
 {"name": "OpenHands + Gemini3-Flash", "set": "go", "total": 68, "logo": "OpenHands", "date": "2026-01-08", "resolved": 21}
