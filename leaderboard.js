@@ -4,7 +4,8 @@ const logoMap = {
   'OpenHands': 'assets/logos/OpenHands.png',
   'Agentless': 'assets/logos/Agentless.png',
   'qwen': "assets/logos/qwen.png",
-  'claude': "assets/logos/claude.png"
+  'claude': "assets/logos/claude.png",
+  "Win-agent": "assets/swe-bench-live.png"
 };
 
 // Current sort configuration

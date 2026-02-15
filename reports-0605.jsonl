@@ -1,3 +1,7 @@
+{"name": "Win-agent + Gemini-3-Flash", "set": "windows", "total": 50, "logo": "Win-agent", "date": "2026-01-08", "resolved": 8}
+{"name": "Win-agent + Claude-4.5-Sonnet", "set": "windows", "total": 50, "logo": "Win-agent", "date": "2026-01-08", "resolved": 15}
+{"name": "Win-agent + GPT-5.2-Thinking-Medium", "set": "windows", "total": 50, "logo": "Win-agent", "date": "2026-01-08", "resolved": 10}
+{"name": "Win-agent + DeepSeek-V3.1-Terminus", "set": "windows", "total": 50, "logo": "Win-agent", "date": "2026-01-08", "resolved": 10}
 {"name": "Claude Code + DeepSeek-V3.1-Terminus", "set": "java", "total": 62, "logo": "claude", "date": "2026-01-08", "resolved": 14}
 {"name": "Claude Code + DeepSeek-V3.1-Terminus", "set": "rust", "total": 45, "logo": "claude", "date": "2026-01-08", "resolved": 8}
 {"name": "Claude Code + DeepSeek-V3.1-Terminus", "set": "go", "total": 68, "logo": "claude", "date": "2026-01-08", "resolved": 20}
