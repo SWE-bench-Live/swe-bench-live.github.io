@@ -47,6 +47,7 @@ let currentSort = { column: 'resolved', direction: 'desc' };
 let allReports = [];
 let selectedSplits = new Set();
 let selectedSet = 'lite';
+const assetVersion = '20260604-3';
 
 // Split name mapping for display
 const splitNameMap = {
@@ -175,7 +176,7 @@ function updateSplitSummary() {
 // Load and display leaderboard data
 async function loadLeaderboard() {
   try {
-    const response = await fetch('reports-0605.jsonl');
+    const response = await fetch(`reports-0605.jsonl?v=${assetVersion}`, { cache: 'no-store' });
     const text = await response.text();
     
     // Parse JSONL format and filter to only lite set
