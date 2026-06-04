@@ -1044,11 +1044,16 @@ body {
 }
 
 .model-link {
-  text-decoration: none;
+  color: #003b73;
+  text-decoration: underline;
+}
+
+.model-link:visited {
+  color: #003b73;
 }
 
 .model-link:hover {
-  text-decoration: underline;
+  color: #00264a;
 }
 
 /* Rank badges */
