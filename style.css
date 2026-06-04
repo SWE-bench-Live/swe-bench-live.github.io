@@ -925,7 +925,7 @@ body {
 
 .leaderboard-table {
   width: 100%;
-  min-width: 600px; /* Ensure table maintains structure on mobile */
+  min-width: 740px; /* Ensure table maintains structure on mobile */
   border-collapse: collapse;
   font-size: 0.9rem;
   table-layout: fixed;
@@ -984,6 +984,13 @@ body {
   text-align: center;
 }
 
+.instances-col {
+  width: 150px;
+  text-align: center;
+  color: #666666;
+  font-size: 0.85rem;
+}
+
 .date-col {
   width: 100px;
   text-align: center;
@@ -1034,6 +1041,14 @@ body {
   font-weight: 500;
   color: #0a0a0a;
   word-break: break-word;
+}
+
+.model-link {
+  text-decoration: none;
+}
+
+.model-link:hover {
+  text-decoration: underline;
 }
 
 /* Rank badges */

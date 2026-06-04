@@ -5,8 +5,42 @@ const logoMap = {
   'Agentless': 'assets/logos/Agentless.png',
   'qwen': "assets/logos/qwen.png",
   'claude': "assets/logos/claude.png",
-  "Win-agent": "assets/swe-bench-live.png"
+  "Win-agent": "assets/swe-bench-live.png",
+  "Brokk": "assets/brokk.png"
 };
+
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char]));
+}
+
+function getSafeLinkUrl(value) {
+  if (!value) return null;
+
+  try {
+    const url = new URL(value, window.location.href);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
+function renderModelName(item) {
+  const name = escapeHtml(item.name || 'N/A');
+  const url = getSafeLinkUrl(item.url);
+
+  if (!url) {
+    return `<span class="model-name">${name}</span>`;
+  }
+
+  return `<a class="model-name model-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${name}</a>`;
+}
 
 // Current sort configuration
 let currentSort = { column: 'resolved', direction: 'desc' };
@@ -135,22 +169,7 @@ function applySplitSelection() {
 
 // Update split summary text
 function updateSplitSummary() {
-  // With period removed, just show instances for selected set
-  const total = getMostCommonTotal(selectedSet);
-  document.getElementById('total-instances').textContent = total != null ? total : '-';
-}
-
-// Get the most common `total` value for a given set from reports
-function getMostCommonTotal(setName) {
-  const items = allReports.filter(r => (r.set || '').toLowerCase() === setName && typeof r.total === 'number');
-  if (!items.length) return null;
-  const counts = new Map();
-  for (const r of items) counts.set(r.total, (counts.get(r.total) || 0) + 1);
-  let best = null, bestCount = -1;
-  for (const [val, cnt] of counts.entries()) {
-    if (cnt > bestCount) { best = val; bestCount = cnt; }
-  }
-  return best;
+  // Instance totals are displayed per row in the num_valid_inst column.
 }
 
 // Load and display leaderboard data
@@ -182,6 +201,7 @@ async function loadLeaderboard() {
           report.resolved_percentage = "0.00";
           report.resolved_count = 0;
         }
+        report.num_valid_inst = report.num_valid_inst ?? report.num_instances ?? report.total ?? null;
         return report;
       });
     
@@ -218,6 +238,18 @@ function sortReports(reports) {
       const bDate = new Date(b.date || '2024-01-01');
       return currentSort.direction === 'asc' ? 
         aDate - bDate : bDate - aDate;
+    } else if (currentSort.column === 'num_valid_inst') {
+      const aVal = Number(a.num_valid_inst) || 0;
+      const bVal = Number(b.num_valid_inst) || 0;
+
+      if (aVal === bVal) {
+        const aDate = new Date(a.date || '2024-01-01');
+        const bDate = new Date(b.date || '2024-01-01');
+        return bDate - aDate;
+      }
+
+      return currentSort.direction === 'asc' ?
+        aVal - bVal : bVal - aVal;
     } else {
       // Sort by resolved percentage
       const aVal = parseFloat(a.resolved_percentage);
@@ -246,7 +278,7 @@ function renderTable(data) {
   if (data.length === 0) {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td colspan="4" style="text-align: center; padding: 3rem; color: #666666;">
+      <td colspan="5" style="text-align: center; padding: 3rem; color: #666666;">
         No results available for the selected set.
       </td>
     `;
@@ -265,6 +297,7 @@ function renderTable(data) {
     
     // Get logo path
     const logoPath = logoMap[item.logo] || 'assets/logos/default.png';
+    const modelName = renderModelName(item);
     
     // Format date
     const formattedDate = item.date ? new Date(item.date).toLocaleDateString('en-US', {
@@ -278,14 +311,15 @@ function renderTable(data) {
       <td class="model-col">
         <div class="model-info">
           <div class="model-logo-frame">
-            <img src="${logoPath}" alt="${item.logo}" class="model-logo-img" onerror="this.style.display='none'">
+            <img src="${escapeHtml(logoPath)}" alt="${escapeHtml(item.logo || '')}" class="model-logo-img" onerror="this.style.display='none'">
           </div>
-          <span class="model-name">${item.name}</span>
+          ${modelName}
         </div>
       </td>
       <td class="score-col">
         <span class="score-display">${item.resolved_percentage}%</span>
       </td>
+      <td class="instances-col">${item.num_valid_inst ?? "-"}</td>
       <td class="date-col">${formattedDate}</td>
     `;
     
