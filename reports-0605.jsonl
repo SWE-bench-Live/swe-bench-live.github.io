@@ -1,6 +1,6 @@
 {"name": "OpenHands + Deepseek-v4-Pro", "set": "rust", "total": 64, "logo": "OpenHands", "date": "2026-06-05", "resolved": 18}
 {"name": "Claude Code + Deepseek-v4-Pro", "set": "rust", "total": 64, "logo": "claude", "date": "2026-06-05", "resolved": 19}
-{"name": "SWE-agent + Deepseek-v4-Pro", "set": "rust", "total": 64, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 42}
+{"name": "SWE-agent + Deepseek-v4-Pro", "set": "rust", "total": 64, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 22}
 {"name": "OpenHands + GPT-5.5 (Medium)", "set": "rust", "total": 64, "logo": "OpenHands", "date": "2026-06-05", "resolved": 19}
 {"name": "Claude Code + GPT-5.5 (Medium)", "set": "rust", "total": 64, "logo": "claude", "date": "2026-06-05", "resolved": 21}
 {"name": "SWE-agent + GPT-5.5 (Medium)", "set": "rust", "total": 64, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 18}
