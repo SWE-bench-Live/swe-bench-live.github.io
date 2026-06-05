@@ -85,31 +85,24 @@
         <h2>News</h2>
         <div class="news-container">
           <div class="news-item">
-            <div class="news-date">Feb 2026</div>
+            <div class="news-date">Jun 2026</div>
             <div class="news-content">
-              <h4>Windows Specific Task Released with Benchmarking Result</h4>
-              <p>We released SWE-bench-Live/Windows to test agents in taking actions in Windows powershell and making Windows-specific code implementation. Through experiments we find none of SWE-agent, OpenHands and ClaudeCode can run on Windows containers, so we implement a minimal Windows-compatible agent with the same tool calls as  SWE-agent and OpenHands, named as <a href="https://github.com/njukenanli/Win-Agent" target="_blank">Win-agent</a>, for benchmarking of LLMs on Windows tasks.</p>
+              <h4>Leaderboard Update</h4>
+              <p>Added results contrubited by MIT-IBM Agent (BOAD) and Brokk Agent. Added GPT-5.5 and Deepseek-v4-Pro results, evaluated on each language subset after filtering out invalid instances by running regression tests three times.</p>
             </div>
           </div>
           <div class="news-item">
-            <div class="news-date">Dec 2025</div>
+            <div class="news-date">Feb 2026</div>
             <div class="news-content">
               <h4>Multi Language and OS update</h4>
-              <p>We upgraded RepoLaunch Agent to support building repos on all mainstram languages (C C++ C# Python Java Go JS/TS Rust) and on both Linux&Windows platforms. The MultiLang benchmark has been released on HuggingFace. On the leaderboard below, Lite, Full and Verified splits are still for Python tasks only.</p>
+              <p>We upgraded <a href="https://github.com/microsoft/RepoLaunch" target="_blank">RepoLaunch Agent</a> to support building repos on all mainstram languages (C C++ C# Python Java Go JS/TS Rust) and on both Linux&Windows platforms. The SWE-bench-Live/MultiLang and SWE-bench-Live/Windows benchmark has been released on HuggingFace. SWE-bench-Live/Windows is aimed at test agents in taking actions in Windows powershell and making Windows-specific code implementation. Through experiments we find none of SWE-agent, OpenHands and ClaudeCode can run on Windows containers, so we implement a minimal Windows-compatible agent with the same tool calls as  SWE-agent and OpenHands, named as <a href="https://github.com/njukenanli/Win-Agent" target="_blank">Win-agent</a>, for benchmarking of LLMs on Windows tasks. On the leaderboard below, Lite, Full and Verified splits are still for Python tasks only.</p>
             </div>
           </div>
           <div class="news-item">
             <div class="news-date">Aug 2025</div>
             <div class="news-content">
               <h4>Dataset update (through Aug 2025)</h4>
-              <p>We've finalized the update process for SWE-bench-Live: Each month, we will add 50 newly verified, high-quality issues to the dataset. The <b>lite</b> and <b>verified</b> splits will remain frozen, ensuring fair leaderboard comparisons and keeping evaluation costs manageable. To access the latest issues, please refer to the <b>full</b> split!</p>
-            </div>
-          </div>
-          <div class="news-item">
-            <div class="news-date">Jun 2025</div>
-            <div class="news-content">
-              <h4>Dataset update</h4>
-              <p>We've updated the dataset! Now it includes <b>1,565</b> task instances, covering <b>164</b> repositories.</p>
+              <p>We will continue to add new llm-verified issues to the dataset. The <b>lite</b> and <b>verified</b> splits will remain frozen, ensuring fair leaderboard comparisons and keeping evaluation costs manageable. To access the latest issues, please refer to the <b>test</b> split!</p>
             </div>
           </div>
         </div>
@@ -231,6 +224,6 @@
     </div>
   </div>
 
-  <script src="leaderboard.js?v=20260604-3"></script>
+  <script src="leaderboard.js?v=20260605-1"></script>
 </body>
 </html>

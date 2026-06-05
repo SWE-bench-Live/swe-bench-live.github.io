@@ -1,3 +1,39 @@
+{"name": "OpenHands + Deepseek-v4-Pro", "set": "rust", "total": 64, "logo": "OpenHands", "date": "2026-06-05", "resolved": 18}
+{"name": "Claude Code + Deepseek-v4-Pro", "set": "rust", "total": 64, "logo": "claude", "date": "2026-06-05", "resolved": 19}
+{"name": "SWE-agent + Deepseek-v4-Pro", "set": "rust", "total": 64, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 42}
+{"name": "OpenHands + GPT-5.5 (Medium)", "set": "rust", "total": 64, "logo": "OpenHands", "date": "2026-06-05", "resolved": 19}
+{"name": "Claude Code + GPT-5.5 (Medium)", "set": "rust", "total": 64, "logo": "claude", "date": "2026-06-05", "resolved": 21}
+{"name": "SWE-agent + GPT-5.5 (Medium)", "set": "rust", "total": 64, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 18}
+{"name": "OpenHands + Deepseek-v4-Pro", "set": "go", "total": 98, "logo": "OpenHands", "date": "2026-06-05", "resolved": 27}
+{"name": "Claude Code + Deepseek-v4-Pro", "set": "go", "total": 98, "logo": "claude", "date": "2026-06-05", "resolved": 29}
+{"name": "SWE-agent + Deepseek-v4-Pro", "set": "go", "total": 98, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 29}
+{"name": "OpenHands + GPT-5.5 (Medium)", "set": "go", "total": 98, "logo": "OpenHands", "date": "2026-06-05", "resolved": 25}
+{"name": "Claude Code + GPT-5.5 (Medium)", "set": "go", "total": 98, "logo": "claude", "date": "2026-06-05", "resolved": 34}
+{"name": "SWE-agent + GPT-5.5 (Medium)", "set": "go", "total": 98, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 37}
+{"name": "OpenHands + Deepseek-v4-Pro", "set": "tsjs", "total": 204, "logo": "OpenHands", "date": "2026-06-05", "resolved": 75}
+{"name": "Claude Code + Deepseek-v4-Pro", "set": "tsjs", "total": 204, "logo": "claude", "date": "2026-06-05", "resolved": 63}
+{"name": "SWE-agent + Deepseek-v4-Pro", "set": "tsjs", "total": 204, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 75}
+{"name": "OpenHands + GPT-5.5 (Medium)", "set": "tsjs", "total": 204, "logo": "OpenHands", "date": "2026-06-05", "resolved": 92}
+{"name": "Claude Code + GPT-5.5 (Medium)", "set": "tsjs", "total": 204, "logo": "claude", "date": "2026-06-05", "resolved": 87}
+{"name": "SWE-agent + GPT-5.5 (Medium)", "set": "tsjs", "total": 204, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 97}
+{"name": "OpenHands + Deepseek-v4-Pro", "set": "java", "total": 102, "logo": "OpenHands", "date": "2026-06-05", "resolved": 40}
+{"name": "Claude Code + Deepseek-v4-Pro", "set": "java", "total": 102, "logo": "claude", "date": "2026-06-05", "resolved": 39}
+{"name": "SWE-agent + Deepseek-v4-Pro", "set": "java", "total": 102, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 40}
+{"name": "OpenHands + GPT-5.5 (Medium)", "set": "java", "total": 102, "logo": "OpenHands", "date": "2026-06-05", "resolved": 48}
+{"name": "Claude Code + GPT-5.5 (Medium)", "set": "java", "total": 102, "logo": "claude", "date": "2026-06-05", "resolved": 46}
+{"name": "SWE-agent + GPT-5.5 (Medium)", "set": "java", "total": 102, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 51}
+{"name": "OpenHands + Deepseek-v4-Pro", "set": "csharp", "total": 78, "logo": "OpenHands", "date": "2026-06-05", "resolved": 30}
+{"name": "Claude Code + Deepseek-v4-Pro", "set": "csharp", "total": 78, "logo": "claude", "date": "2026-06-05", "resolved": 29}
+{"name": "SWE-agent + Deepseek-v4-Pro", "set": "csharp", "total": 78, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 35}
+{"name": "OpenHands + GPT-5.5 (Medium)", "set": "csharp", "total": 78, "logo": "OpenHands", "date": "2026-06-05", "resolved": 33}
+{"name": "Claude Code + GPT-5.5 (Medium)", "set": "csharp", "total": 78, "logo": "claude", "date": "2026-06-05", "resolved": 31}
+{"name": "SWE-agent + GPT-5.5 (Medium)", "set": "csharp", "total": 78, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 35}
+{"name": "OpenHands + Deepseek-v4-Pro", "set": "ccpp", "total": 66, "logo": "OpenHands", "date": "2026-06-05", "resolved": 15}
+{"name": "Claude Code + Deepseek-v4-Pro", "set": "ccpp", "total": 66, "logo": "claude", "date": "2026-06-05", "resolved": 15}
+{"name": "SWE-agent + Deepseek-v4-Pro", "set": "ccpp", "total": 66, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 16}
+{"name": "OpenHands + GPT-5.5 (Medium)", "set": "ccpp", "total": 66, "logo": "OpenHands", "date": "2026-06-05", "resolved": 22}
+{"name": "Claude Code + GPT-5.5 (Medium)", "set": "ccpp", "total": 66, "logo": "claude", "date": "2026-06-05", "resolved": 25}
+{"name": "SWE-agent + GPT-5.5 (Medium)", "set": "ccpp", "total": 66, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 24}
 {"name": "MIT-IBM Agent (BOAD) + SWE-Agent + Seed-OSS-36B", "set": "lite", "total": 300, "logo": "Win-agent", "date": "2025-12-21", "resolved": 60, "url": "https://github.com/SWE-bench-Live/submission/tree/main/submissions/lite/20251221-MITIBM-agent-seedoss36b"}
 {"name": "Brokk + Sonnet4.5 (Standard) + Flash3 (Minimal)", "set": "csharp", "total": 20, "logo": "Brokk", "date": "2026-02-25", "resolved": 9, "url": "https://github.com/SWE-bench-Live/submission/tree/main/submissions/multilang/cs/20260225-brokk-sonnet45-flash3"}
 {"name": "Brokk + GPT5.2 (Medium) + Flash3 (Minimal)", "set": "csharp", "total": 20, "logo": "Brokk", "date": "2026-02-23", "resolved": 9, "url": "https://github.com/SWE-bench-Live/submission/tree/main/submissions/multilang/cs/20260223-brokk-gpt52-flash3"}

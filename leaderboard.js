@@ -47,7 +47,7 @@ let currentSort = { column: 'resolved', direction: 'desc' };
 let allReports = [];
 let selectedSplits = new Set();
 let selectedSet = 'lite';
-const assetVersion = '20260604-3';
+const assetVersion = '20260605-1';
 
 // Split name mapping for display
 const splitNameMap = {
@@ -196,10 +196,10 @@ async function loadLeaderboard() {
         
         // Calculate percentage based on total
         if (report.total && report.total > 0) {
-          report.resolved_percentage = ((resolvedCount / report.total) * 100).toFixed(2);
+          report.resolved_percentage = ((resolvedCount / report.total) * 100).toFixed(1);
           report.resolved_count = resolvedCount;
         } else {
-          report.resolved_percentage = "0.00";
+          report.resolved_percentage = "0.0";
           report.resolved_count = 0;
         }
         report.num_valid_inst = report.num_valid_inst ?? report.num_instances ?? report.total ?? null;
