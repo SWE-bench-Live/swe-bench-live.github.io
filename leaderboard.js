@@ -378,15 +378,21 @@ function initSmoothScrolling() {
   });
 }
 
-// Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', async () => {
+// Initialize everything once the DOM is available
+async function initLeaderboard() {
   await loadSplits();
   await loadLeaderboard();
   setupSorting();
   setupSetTabs();
   initSmoothScrolling();
   updateSplitSummary();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLeaderboard);
+} else {
+  initLeaderboard();
+}
 
 // Setup dataset tabs for selecting set
 function setupSetTabs() {
