@@ -224,6 +224,10 @@
     </div>
   </div>
 
-  <script src="leaderboard.js?v=20260605-1"></script>
+  <script>
+    const leaderboardScript = document.createElement("script");
+    leaderboardScript.src = "leaderboard.js?v=" + Date.now();
+    document.body.appendChild(leaderboardScript);
+  </script>
 </body>
 </html>

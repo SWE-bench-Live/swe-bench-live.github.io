@@ -49,7 +49,7 @@ let currentSort = { column: 'resolved', direction: 'desc' };
 let allReports = [];
 let selectedSplits = new Set();
 let selectedSet = 'lite';
-const assetVersion = '20260605-1';
+const assetVersion = Date.now().toString();
 
 // Split name mapping for display
 const splitNameMap = {
