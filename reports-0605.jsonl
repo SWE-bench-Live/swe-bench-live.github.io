@@ -1,3 +1,5 @@
+{"name": "Slingshot + Claude-Sonnet-4.5", "set": "tsjs", "total": 200, "logo": "Slingshot-Agent", "date": "2026-06-23", "resolved": 51, "url": "https://github.com/SWE-bench-Live/submission/blob/main/submissions/multilang/js_ts/20260623-slingshot-claude4.5"}
+{"name": "AMI Agent + Claude-Oups-4.6", "set": "lite", "total": 300, "logo": "AMI-Agent", "date": "2026-06-23", "resolved": 189, "url": "https://github.com/SWE-bench-Live/submission/tree/main/submissions/lite/ami-agent"}
 {"name": "Win-agent + GPT-5.5 (Medium)", "set": "windows", "total": 60, "logo": "Win-agent", "date": "2026-06-06", "resolved": 16}
 {"name": "Win-agent + Deepseek-v4-Pro", "set": "windows", "total": 60, "logo": "Win-agent", "date": "2026-06-06", "resolved": 13}
 {"name": "OpenHands + Deepseek-v4-Pro", "set": "rust", "total": 64, "logo": "OpenHands", "date": "2026-06-05", "resolved": 18}

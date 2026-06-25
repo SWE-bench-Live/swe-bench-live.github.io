@@ -6,7 +6,9 @@ const logoMap = {
   'qwen': "assets/logos/qwen.png",
   'claude': "assets/logos/claude.png",
   "Win-agent": "assets/swe-bench-live.png",
-  "Brokk": "assets/brokk.png"
+  "Brokk": "assets/logos/brokk.png",
+  "AMI-Agent": "assets/logos/ami-agent.png",
+  "Slingshot-Agent": "assets/logos/slingshot.png"
 };
 
 
