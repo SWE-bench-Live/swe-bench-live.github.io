@@ -51,6 +51,9 @@ let selectedSplits = new Set();
 let selectedSet = 'lite';
 const assetVersion = Date.now().toString();
 
+// Valid dataset keys (must match data-set attributes in HTML)
+const validSets = ['lite', 'full', 'verified', 'ccpp', 'csharp', 'java', 'tsjs', 'go', 'rust', 'windows'];
+
 // Split name mapping for display
 const splitNameMap = {
   '202401': 'Jan 2024',
@@ -359,6 +362,21 @@ function setupSorting() {
   });
 }
 
+// Scroll to a section, optionally activating a dataset tab
+function scrollToSection(targetId) {
+  let elementId = targetId;
+  if (targetId.startsWith('leaderboard-') && validSets.includes(targetId.substring('leaderboard-'.length))) {
+    elementId = 'leaderboard';
+    activateSet(targetId.substring('leaderboard-'.length), true);
+  }
+  const targetElement = document.getElementById(elementId);
+  if (targetElement) {
+    const yOffset = -80;
+    const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+}
+
 // Initialize smooth scrolling for navigation links
 function initSmoothScrolling() {
   document.querySelectorAll('a.nav-link').forEach(link => {
@@ -366,16 +384,16 @@ function initSmoothScrolling() {
       const href = link.getAttribute('href');
       if (href.startsWith('#')) {
         e.preventDefault();
-        const targetId = href.substring(1);
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-          const yOffset = -80;
-          const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({ top: y, behavior: 'smooth' });
-        }
+        scrollToSection(href.substring(1));
       }
     });
   });
+
+  // On initial load, handle hash in URL (e.g. direct link to #leaderboard-go)
+  const initialHash = location.hash.replace('#', '');
+  if (initialHash) {
+    setTimeout(() => scrollToSection(initialHash), 100);
+  }
 }
 
 // Initialize everything once the DOM is available
@@ -394,6 +412,36 @@ if (document.readyState === 'loading') {
   initLeaderboard();
 }
 
+// Activate a dataset tab by key, update the table and URL hash
+function activateSet(setKey, updateHash) {
+  if (!validSets.includes(setKey)) return;
+  const container = document.getElementById('set-tabs');
+  if (!container) return;
+  const buttons = container.querySelectorAll('.tab-btn');
+  buttons.forEach(b => b.classList.remove('active'));
+  const target = container.querySelector(`.tab-btn[data-set="${setKey}"]`);
+  if (target) target.classList.add('active');
+  selectedSet = setKey;
+  updateLeaderboard();
+  updateSplitSummary();
+  if (updateHash) {
+    history.replaceState(null, '', '#leaderboard-' + setKey);
+  }
+}
+
+// Read the URL hash and activate the matching tab (if any)
+function applyHashToTab() {
+  const hash = location.hash.replace('#', '');
+  if (hash.startsWith('leaderboard-')) {
+    const setKey = hash.substring('leaderboard-'.length);
+    if (validSets.includes(setKey)) {
+      activateSet(setKey, false);
+      return true;
+    }
+  }
+  return false;
+}
+
 // Setup dataset tabs for selecting set
 function setupSetTabs() {
   const container = document.getElementById('set-tabs');
@@ -401,11 +449,11 @@ function setupSetTabs() {
   const buttons = container.querySelectorAll('.tab-btn');
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedSet = (btn.dataset.set || 'lite').toLowerCase();
-      updateLeaderboard();
-      updateSplitSummary();
+      const setKey = (btn.dataset.set || 'lite').toLowerCase();
+      activateSet(setKey, true);
     });
   });
+
+  window.addEventListener('hashchange', () => { applyHashToTab(); });
+  applyHashToTab();
 }
