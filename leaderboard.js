@@ -44,6 +44,21 @@ function renderModelName(item) {
   return `<a class="model-name model-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${name}</a>`;
 }
 
+function renderVerifiedTag(item) {
+  if (item.verified !== true) return '';
+
+  const message = 'the result has been manually checked by the maintainers';
+  return `
+    <a class="verified-tag" href="#verification-policy" title="${message}" data-tooltip="${message}" aria-label="Verified: ${message}">
+      <svg class="verified-icon" viewBox="0 0 20 20" aria-hidden="true">
+        <circle cx="10" cy="10" r="9" fill="currentColor"/>
+        <path d="M5.8 10.2 8.6 13l5.8-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="visually-hidden">Verified</span>
+    </a>
+  `;
+}
+
 // Current sort configuration
 let currentSort = { column: 'resolved', direction: 'desc' };
 let allReports = [];
@@ -301,6 +316,7 @@ function renderTable(data) {
     // Get logo path
     const logoPath = logoMap[item.logo] || 'assets/logos/default.png';
     const modelName = renderModelName(item);
+    const verifiedTag = renderVerifiedTag(item);
     
     // Format date
     const formattedDate = item.date ? new Date(item.date).toLocaleDateString('en-US', {
@@ -317,6 +333,7 @@ function renderTable(data) {
             <img src="${escapeHtml(logoPath)}" alt="${escapeHtml(item.logo || '')}" class="model-logo-img" onerror="this.style.display='none'">
           </div>
           ${modelName}
+          ${verifiedTag}
         </div>
       </td>
       <td class="score-col">
