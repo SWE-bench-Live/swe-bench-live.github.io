@@ -47,7 +47,7 @@ function renderModelName(item) {
 function renderVerifiedTag(item) {
   if (item.verified !== true) return '';
 
-  const message = 'the result has been manually checked by the maintainers';
+  const message = 'the result is directly run or manually checked by the maintainer team';
   return `
     <a class="verified-tag" href="#verification-policy" title="${message}" aria-label="Verified: ${message}">
       <img class="verified-icon" src="assets/verified-tag.png" alt="">
