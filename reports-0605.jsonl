@@ -1,3 +1,4 @@
+{"name": "Slingshot-v3.3.0 + GPT-5.6-Sol", "set": "java", "total": 160, "logo": "Slingshot-Agent", "date": "2026-09-01", "resolved": 84, "url": "https://github.com/SWE-bench-Live/submission/tree/main/submissions/multilang/java/slingshot-agent/20260901-sapient-slingshot-gpt-5.6-sol", "verified": true}
 {"name": "Slingshot-v3.3.0 + GPT-5.6-Sol", "set": "lite", "total": 300, "logo": "Slingshot-Agent", "date": "2026-08-31", "resolved": 134, "url": "https://github.com/SWE-bench-Live/submission/tree/main/submissions/lite/sapient-slingshot-agent/v3.3.0/20260831-gpt-5.6-sol", "verified": true}
 {"name": "Slingshot-v3.1.0 + Claude-4.6-Opus", "set": "lite", "total": 300, "logo": "Slingshot-Agent", "date": "2026-08-17", "resolved": 75, "url": "https://github.com/SWE-bench-Live/submission/tree/main/submissions/lite/sapient-slingshot-agent/v3.1.0/20260817-opus-4-6"}
 {"name": "AMI Agent + Claude-4.6-Opus", "set": "java", "total": 109, "logo": "AMI-Agent", "date": "2026-08-17", "resolved": 73, "url": "https://github.com/SWE-bench-Live/submission/blob/main/submissions/multilang/java/ami-agent/20260817-v0.7.2-claude-opus-4-6"}
@@ -15,8 +16,8 @@
 {"name": "Slingshot-v2.6.0 + GPT-5.5 (Medium)", "set": "tsjs", "total": 204, "logo": "Slingshot-Agent", "date": "2026-06-29", "resolved": 77, "url": "https://github.com/SWE-bench-Live/submission/tree/main/submissions/multilang/js_ts/slingshot-agent/20260629-sapient-slingshot-gpt-5.5"}
 {"name": "Slingshot-v2.6.0 + Claude-4.5-Sonnet", "set": "tsjs", "total": 204, "logo": "Slingshot-Agent", "date": "2026-06-23", "resolved": 51, "url": "https://github.com/SWE-bench-Live/submission/tree/main/submissions/multilang/js_ts/slingshot-agent/20260623-slingshot-claude4.5"}
 {"name": "AMI Agent + Claude-4.6-Opus", "set": "lite", "total": 300, "logo": "AMI-Agent", "date": "2026-06-23", "resolved": 189, "url": "https://github.com/SWE-bench-Live/submission/tree/main/submissions/lite/ami-agent"}
-{"name": "Win-agent + GPT-5.5 (Medium)", "set": "windows", "total": 60, "logo": "Win-agent", "date": "2026-06-06", "resolved": 16}
-{"name": "Win-agent + Deepseek-v4-Pro", "set": "windows", "total": 60, "logo": "Win-agent", "date": "2026-06-06", "resolved": 13}
+{"name": "Win-agent + GPT-5.5 (Medium)", "set": "windows", "total": 60, "logo": "Win-agent", "date": "2026-06-06", "resolved": 16, "url": "https://github.com/SWE-bench-Live/submission/tree/main/submissions/windows/win-agent/gpt-5.5-medium", "verified": true}
+{"name": "Win-agent + Deepseek-v4-Pro", "set": "windows", "total": 60, "logo": "Win-agent", "date": "2026-06-06", "resolved": 13, "url": "https://github.com/SWE-bench-Live/submission/tree/main/submissions/windows/win-agent/deepseek-v4-pro", "verified": true}
 {"name": "OpenHands + Deepseek-v4-Pro", "set": "rust", "total": 64, "logo": "OpenHands", "date": "2026-06-05", "resolved": 18}
 {"name": "Claude Code + Deepseek-v4-Pro", "set": "rust", "total": 64, "logo": "claude", "date": "2026-06-05", "resolved": 19}
 {"name": "SWE-agent + Deepseek-v4-Pro", "set": "rust", "total": 64, "logo": "SWE-agent", "date": "2026-06-05", "resolved": 22}
