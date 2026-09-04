@@ -49,11 +49,8 @@ function renderVerifiedTag(item) {
 
   const message = 'the result has been manually checked by the maintainers';
   return `
-    <a class="verified-tag" href="#verification-policy" title="${message}" data-tooltip="${message}" aria-label="Verified: ${message}">
-      <svg class="verified-icon" viewBox="0 0 20 20" aria-hidden="true">
-        <circle cx="10" cy="10" r="9" fill="currentColor"/>
-        <path d="M5.8 10.2 8.6 13l5.8-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+    <a class="verified-tag" href="#verification-policy" title="${message}" aria-label="Verified: ${message}">
+      <img class="verified-icon" src="assets/verified-tag.png" alt="">
       <span class="visually-hidden">Verified</span>
     </a>
   `;

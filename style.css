@@ -1067,8 +1067,8 @@ body {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: auto;
+  height: 1.35rem;
   color: #0f9d58;
   vertical-align: -0.2em;
   text-decoration: none;
@@ -1076,61 +1076,13 @@ body {
 
 .verified-icon {
   display: block;
-  width: 100%;
+  width: auto;
   height: 100%;
-}
-
-.verified-tag::before,
-.verified-tag::after {
-  position: absolute;
-  left: 50%;
-  z-index: 30;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.15s ease;
-}
-
-.verified-tag::before {
-  top: calc(100% + 0.25rem);
-  width: 0;
-  height: 0;
-  border-right: 0.35rem solid transparent;
-  border-bottom: 0.35rem solid #1f2937;
-  border-left: 0.35rem solid transparent;
-  content: "";
-  transform: translateX(-50%);
-}
-
-.verified-tag::after {
-  top: calc(100% + 0.6rem);
-  width: max-content;
-  max-width: min(18rem, 70vw);
-  padding: 0.5rem 0.65rem;
-  border-radius: 0.35rem;
-  background: #1f2937;
-  color: white;
-  content: attr(data-tooltip);
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: 1.35;
-  text-align: center;
-  text-transform: none;
-  letter-spacing: normal;
-  white-space: normal;
-  transform: translateX(-50%);
-}
-
-.verified-tag:hover::before,
-.verified-tag:hover::after,
-.verified-tag:focus-visible::before,
-.verified-tag:focus-visible::after {
-  opacity: 1;
-  visibility: visible;
+  object-fit: contain;
 }
 
 .verified-tag:focus-visible {
-  border-radius: 50%;
+  border-radius: 0.25rem;
   outline: 2px solid #0f9d58;
   outline-offset: 2px;
 }
