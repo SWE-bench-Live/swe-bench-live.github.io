@@ -8,7 +8,8 @@ const logoMap = {
   "Win-agent": "assets/swe-bench-live.png",
   "Brokk": "assets/logos/brokk.png",
   "AMI-Agent": "assets/logos/ami-agent.png",
-  "Slingshot-Agent": "assets/logos/slingshot.png"
+  "Slingshot-Agent": "assets/logos/slingshot.png",
+  "agav-agent": "assets/logos/agav-agent.jfif"
 };
 
 
