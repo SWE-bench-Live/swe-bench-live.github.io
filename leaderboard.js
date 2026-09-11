@@ -1,5 +1,6 @@
 // Logo mapping for different organizations
 const logoMap = {
+  "Default-logo": "assets/swe-bench-live.png",
   'SWE-agent': 'assets/logos/SWE-agent.png',
   'OpenHands': 'assets/logos/OpenHands.png',
   'Agentless': 'assets/logos/Agentless.png',
