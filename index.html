@@ -15,13 +15,18 @@
   
   <title>SWE-bench-Live Leaderboard</title>
   <link rel="icon" type="image/png" href="assets/swe-bench-live.png">
-  <link rel="stylesheet" href="style.css?v=20260904-3" />
+  <link rel="stylesheet" href="style.css?v=20261101-11" />
   <!-- Import Inter font from Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+  <button class="sidebar-toggle" type="button" aria-controls="site-sidebar" aria-expanded="false">
+    <span class="sidebar-toggle-icon" aria-hidden="true"></span>
+    <span class="sidebar-toggle-label">Menu</span>
+  </button>
+  <div class="sidebar-backdrop" aria-hidden="true"></div>
   <!-- Left Sidebar Navigation -->
-  <nav class="sidebar">
+  <nav class="sidebar" id="site-sidebar" aria-label="Main navigation">
     <div class="sidebar-content">
       <div class="sidebar-logo">
         <img src="assets/swe-bench-live.png" alt="SWE-bench-Live" class="sidebar-logo-img">
@@ -31,6 +36,7 @@
         <li><a href="#news" class="nav-link">News</a></li>
         <li><a href="#leaderboard" class="nav-link">Leaderboard</a></li>
         <li><a href="#submit" class="nav-link">Submit Results</a></li>
+        <li><a href="#correspondence" class="nav-link">Correspondence</a></li>
         <li><a href="#citation" class="nav-link">Citation</a></li>
       </ul>
       
@@ -113,20 +119,32 @@
         <div class="leaderboard-header">
           <h2>Leaderboard</h2>
           <div class="header-controls">
-            <div class="dataset-tabs" id="set-tabs">
-              <button class="tab-btn active" data-set="lite" id="set-lite">Lite</button>
-              <button class="tab-btn" data-set="full" id="set-full">Full</button>
-              <button class="tab-btn" data-set="verified" id="set-verified">Verified</button>
-              <button class="tab-btn" data-set="ccpp" id="set-ccpp">C/C++</button>
-              <button class="tab-btn" data-set="csharp" id="set-csharp">C#</button>
-              <button class="tab-btn" data-set="java" id="set-java">Java</button>
-              <button class="tab-btn" data-set="tsjs" id="set-tsjs">TS/JS</button>
-              <button class="tab-btn" data-set="go" id="set-go">Go</button>
-              <button class="tab-btn" data-set="rust" id="set-rust">Rust</button>
-              <button class="tab-btn" data-set="windows" id="set-windows">Windows</button>
-            </div>
-            <div class="header-stats">
-              <span class="stat-item"><strong id="total-models">-</strong> results</span>
+            <div class="dataset-groups" id="set-tabs">
+              <div class="dataset-group" role="group" aria-labelledby="python-dataset-label">
+                <a class="dataset-label" id="python-dataset-label" href="https://huggingface.co/datasets/SWE-bench-Live/SWE-bench-Live" target="_blank" rel="noopener noreferrer">SWE-bench-Live (Python)<span aria-hidden="true">↗</span></a>
+                <div class="dataset-tabs">
+                  <button class="tab-btn active" data-set="lite" id="set-lite">Lite</button>
+                  <button class="tab-btn" data-set="full" id="set-full">Full</button>
+                  <button class="tab-btn" data-set="verified" id="set-verified">Verified</button>
+                </div>
+              </div>
+              <div class="dataset-group" role="group" aria-labelledby="multilang-dataset-label">
+                <a class="dataset-label" id="multilang-dataset-label" href="https://huggingface.co/datasets/SWE-bench-Live/MultiLang" target="_blank" rel="noopener noreferrer">Multi-Language<span aria-hidden="true">↗</span></a>
+                <div class="dataset-tabs">
+                  <button class="tab-btn" data-set="ccpp" id="set-ccpp">C/C++</button>
+                  <button class="tab-btn" data-set="csharp" id="set-csharp">C#</button>
+                  <button class="tab-btn" data-set="java" id="set-java">Java</button>
+                  <button class="tab-btn" data-set="tsjs" id="set-tsjs">TS/JS</button>
+                  <button class="tab-btn" data-set="go" id="set-go">Go</button>
+                  <button class="tab-btn" data-set="rust" id="set-rust">Rust</button>
+                </div>
+              </div>
+              <div class="dataset-group" role="group" aria-labelledby="windows-dataset-label">
+                <a class="dataset-label" id="windows-dataset-label" href="https://huggingface.co/datasets/SWE-bench-Live/Windows" target="_blank" rel="noopener noreferrer">Windows<span aria-hidden="true">↗</span></a>
+                <div class="dataset-tabs">
+                  <button class="tab-btn" data-set="windows" id="set-windows">Windows</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -167,6 +185,17 @@
             <p>Error loading data. Please try again later.</p>
           </div>
         </div>
+        <div class="leaderboard-pagination" id="leaderboard-pagination" hidden>
+          <nav class="page-navigation" aria-label="Leaderboard pages">
+            <span>Page</span>
+            <div class="page-buttons" id="page-buttons"></div>
+          </nav>
+          <label class="page-size-control" for="results-per-page">
+            <input id="results-per-page" type="number" min="1" max="100" step="1" value="20" />
+            results per page
+          </label>
+          <span class="page-summary" id="page-summary" role="status"></span>
+        </div>
       </div>
 
       <div class="statement" id="submit">
@@ -204,7 +233,8 @@
 @article{zhang2025swebenchgoeslive,
   title={SWE-bench Goes Live!},
   author={Linghao Zhang and Shilin He and Chaoyun Zhang and Yu Kang and Bowen Li and Chengxing Xie and Junhao Wang and Maoquan Wang and Yufan Huang and Shengyu Fu and Elsie Nallipogu and Qingwei Lin and Yingnong Dang and Saravan Rajmohan and Dongmei Zhang},
-  journal={arXiv preprint arXiv:2505.23419},
+  journal={Advances in Neural Information Processing Systems},
+  volume={38},
   year={2025}
 }</pre>
         If you refer to the automated build and test tool RepoLaunch, SWE benchmarking/training/RFT/RL environment build, SWE-bench-Live/Multi-Language or SWE-bench-Live/Windows, please cite:

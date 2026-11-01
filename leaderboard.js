@@ -68,6 +68,8 @@ const assetVersion = Date.now().toString();
 
 // Valid dataset keys (must match data-set attributes in HTML)
 const validSets = ['lite', 'full', 'verified', 'ccpp', 'csharp', 'java', 'tsjs', 'go', 'rust', 'windows'];
+const paginationBySet = Object.fromEntries(validSets.map(set => [set, { page: 1, pageSize: 20 }]));
+let reportsLoaded = false;
 
 // Split name mapping for display
 const splitNameMap = {
@@ -226,6 +228,7 @@ async function loadLeaderboard() {
         return report;
       });
     
+    reportsLoaded = true;
     updateLeaderboard();
     document.getElementById('loading').style.display = 'none';
     
@@ -244,11 +247,59 @@ function updateLeaderboard() {
   // Sort data
   const sortedData = sortReports(filtered);
   
-  // Render table
-  renderTable(sortedData);
-  
-  // Update stats
-  document.getElementById('total-models').textContent = filtered.length;
+  // Paginate after sorting so ranks and ordering span the entire selected set.
+  const pagination = paginationBySet[selectedSet];
+  const pageCount = Math.max(1, Math.ceil(sortedData.length / pagination.pageSize));
+  pagination.page = Math.min(pagination.page, pageCount);
+  const offset = (pagination.page - 1) * pagination.pageSize;
+  renderTable(sortedData.slice(offset, offset + pagination.pageSize), offset);
+  renderPagination(sortedData.length, pageCount);
+}
+
+function renderPagination(total, pageCount) {
+  const { page, pageSize } = paginationBySet[selectedSet];
+  document.getElementById('leaderboard-pagination').hidden = !reportsLoaded;
+  document.getElementById('results-per-page').value = pageSize;
+  const first = total ? (page - 1) * pageSize + 1 : 0;
+  const last = Math.min(page * pageSize, total);
+  document.getElementById('page-summary').textContent = `Showing ${first}–${last} of ${total} results`;
+
+  // Keep first/last pages and the current page's neighbors accessible on small screens.
+  const pages = [];
+  for (let number = 1; number <= pageCount; number++) {
+    if (pageCount <= 7 || number === 1 || number === pageCount || Math.abs(number - page) <= 1) {
+      if (pages.length && number - pages[pages.length - 1] > 1) pages.push(null);
+      pages.push(number);
+    }
+  }
+  document.getElementById('page-buttons').innerHTML = pages.map(number => number === null
+    ? '<span class="page-ellipsis" aria-hidden="true">…</span>'
+    : `<button type="button" class="page-button" data-page="${number}" aria-label="Page ${number}"${number === page ? ' aria-current="page"' : ''} aria-controls="leaderboard-table">${number}</button>`
+  ).join('');
+}
+
+function setupPagination() {
+  document.getElementById('page-buttons').addEventListener('click', event => {
+    const button = event.target.closest('button[data-page]');
+    if (!button) return;
+    paginationBySet[selectedSet].page = Number(button.dataset.page);
+    updateLeaderboard();
+    document.querySelector('#page-buttons [aria-current="page"]').focus({ preventScroll: true });
+    scrollToSection('leaderboard');
+  });
+
+  document.getElementById('results-per-page').addEventListener('change', event => {
+    const input = event.target;
+    const pagination = paginationBySet[selectedSet];
+    if (!input.value || !input.checkValidity()) {
+      input.value = pagination.pageSize;
+      return;
+    }
+    pagination.pageSize = input.valueAsNumber;
+    pagination.page = 1;
+    updateLeaderboard();
+    scrollToSection('leaderboard');
+  });
 }
 
 // Sort reports
@@ -292,7 +343,7 @@ function sortReports(reports) {
 }
 
 // Render table
-function renderTable(data) {
+function renderTable(data, offset = 0) {
   const tbody = document.getElementById('leaderboard-body');
   tbody.innerHTML = '';
   
@@ -309,12 +360,13 @@ function renderTable(data) {
   
   data.forEach((item, index) => {
     const row = document.createElement('tr');
+    const rank = offset + index + 1;
     
     // Determine rank badge
     let rankBadge = '';
-    if (index === 0) rankBadge = '<span class="rank-badge gold">🥇</span>';
-    else if (index === 1) rankBadge = '<span class="rank-badge silver">🥈</span>';
-    else if (index === 2) rankBadge = '<span class="rank-badge bronze">🥉</span>';
+    if (rank === 1) rankBadge = '<span class="rank-badge gold">🥇</span>';
+    else if (rank === 2) rankBadge = '<span class="rank-badge silver">🥈</span>';
+    else if (rank === 3) rankBadge = '<span class="rank-badge bronze">🥉</span>';
     
     // Get logo path
     const logoPath = logoMap[item.logo] || 'assets/logos/default.png';
@@ -329,7 +381,7 @@ function renderTable(data) {
     }) : 'N/A';
     
     row.innerHTML = `
-      <td class="rank-col">${rankBadge}${index + 1}</td>
+      <td class="rank-col">${rankBadge}${rank}</td>
       <td class="model-col">
         <div class="model-info">
           <div class="model-logo-frame">
@@ -374,6 +426,7 @@ function setupSorting() {
       header.querySelector('.sort-arrow').textContent = 
         currentSort.direction === 'asc' ? '↑' : '↓';
       
+      paginationBySet[selectedSet].page = 1;
       updateLeaderboard();
     });
   });
@@ -413,13 +466,66 @@ function initSmoothScrolling() {
   }
 }
 
+// Keep mobile navigation available even while leaderboard data is loading.
+function initMobileNavigation() {
+  const toggle = document.querySelector('.sidebar-toggle');
+  const sidebar = document.querySelector('.sidebar');
+  const backdrop = document.querySelector('.sidebar-backdrop');
+  const main = document.querySelector('.main-content');
+  const mobileLayout = window.matchMedia('(max-width: 1024px)');
+
+  function setOpen(open, restoreFocus = true) {
+    open = open && mobileLayout.matches;
+    sidebar.classList.toggle('open', open);
+    document.body.classList.toggle('sidebar-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.querySelector('.sidebar-toggle-label').textContent = open ? 'Close' : 'Menu';
+    main.inert = open;
+    if (!open && restoreFocus && mobileLayout.matches) toggle.focus();
+  }
+
+  toggle.addEventListener('click', () => setOpen(!sidebar.classList.contains('open')));
+  backdrop.addEventListener('click', () => setOpen(false));
+  sidebar.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (mobileLayout.matches) setOpen(false);
+    });
+  });
+
+  document.addEventListener('keydown', event => {
+    if (!sidebar.classList.contains('open')) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setOpen(false);
+    } else if (event.key === 'Tab') {
+      const links = sidebar.querySelectorAll('a[href]');
+      const lastLink = links[links.length - 1];
+      if (event.shiftKey && document.activeElement === toggle) {
+        event.preventDefault();
+        lastLink.focus();
+      } else if (!event.shiftKey && document.activeElement === lastLink) {
+        event.preventDefault();
+        toggle.focus();
+      }
+    }
+  });
+
+  mobileLayout.addEventListener('change', () => {
+    const focusWasInSidebar = sidebar.contains(document.activeElement);
+    setOpen(false, false);
+    if (mobileLayout.matches && focusWasInSidebar) toggle.focus();
+  });
+}
+
 // Initialize everything once the DOM is available
 async function initLeaderboard() {
+  initMobileNavigation();
+  initSmoothScrolling();
+  setupPagination();
   await loadSplits();
   await loadLeaderboard();
   setupSorting();
   setupSetTabs();
-  initSmoothScrolling();
   updateSplitSummary();
 }
 
