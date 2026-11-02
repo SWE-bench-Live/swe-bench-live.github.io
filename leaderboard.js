@@ -68,8 +68,19 @@ const assetVersion = Date.now().toString();
 
 // Valid dataset keys (must match data-set attributes in HTML)
 const validSets = ['lite', 'full', 'verified', 'ccpp', 'csharp', 'java', 'tsjs', 'go', 'rust', 'windows'];
-const paginationBySet = Object.fromEntries(validSets.map(set => [set, { page: 1, pageSize: 20 }]));
+const paginationBySet = Object.fromEntries(validSets.map(set => [set, { page: 1 }]));
+let pageSize = readPageSizeFromUrl();
 let reportsLoaded = false;
+
+function readPageSizeFromUrl() {
+  const value = Number(new URL(window.location.href).searchParams.get('perPage'));
+  return Number.isInteger(value) && value >= 1 && value <= 100 ? value : 20;
+}
+
+function setPageSize(value) {
+  pageSize = value;
+  Object.values(paginationBySet).forEach(pagination => { pagination.page = 1; });
+}
 
 // Split name mapping for display
 const splitNameMap = {
@@ -249,15 +260,15 @@ function updateLeaderboard() {
   
   // Paginate after sorting so ranks and ordering span the entire selected set.
   const pagination = paginationBySet[selectedSet];
-  const pageCount = Math.max(1, Math.ceil(sortedData.length / pagination.pageSize));
+  const pageCount = Math.max(1, Math.ceil(sortedData.length / pageSize));
   pagination.page = Math.min(pagination.page, pageCount);
-  const offset = (pagination.page - 1) * pagination.pageSize;
-  renderTable(sortedData.slice(offset, offset + pagination.pageSize), offset);
+  const offset = (pagination.page - 1) * pageSize;
+  renderTable(sortedData.slice(offset, offset + pageSize), offset);
   renderPagination(sortedData.length, pageCount);
 }
 
 function renderPagination(total, pageCount) {
-  const { page, pageSize } = paginationBySet[selectedSet];
+  const { page } = paginationBySet[selectedSet];
   document.getElementById('leaderboard-pagination').hidden = !reportsLoaded;
   document.getElementById('results-per-page').value = pageSize;
   const first = total ? (page - 1) * pageSize + 1 : 0;
@@ -290,15 +301,22 @@ function setupPagination() {
 
   document.getElementById('results-per-page').addEventListener('change', event => {
     const input = event.target;
-    const pagination = paginationBySet[selectedSet];
     if (!input.value || !input.checkValidity()) {
-      input.value = pagination.pageSize;
+      input.value = pageSize;
       return;
     }
-    pagination.pageSize = input.valueAsNumber;
-    pagination.page = 1;
+    setPageSize(input.valueAsNumber);
+    const url = new URL(window.location.href);
+    url.searchParams.set('perPage', String(pageSize));
+    history.replaceState(null, '', url);
     updateLeaderboard();
     scrollToSection('leaderboard');
+  });
+
+  window.addEventListener('popstate', () => {
+    const urlPageSize = readPageSizeFromUrl();
+    if (urlPageSize !== pageSize) setPageSize(urlPageSize);
+    if (!applyHashToTab()) updateLeaderboard();
   });
 }
 
